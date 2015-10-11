@@ -1,0 +1,8 @@
+{
+    "name": "jeremytubbs/igor",
+    "autoload": {
+        "psr-4": {
+            "Jeremytubbs\\Igor\\": "src/"
+        }
+    }
+}
