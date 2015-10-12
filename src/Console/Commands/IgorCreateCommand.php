@@ -108,7 +108,7 @@ class IgorCreateCommand extends Command
     {
         $stub = $this->files->get(__DIR__ . '/../../stubs/model.stub');
         $className = $this->getModelName();
-        $namespace = str_replace('\\', '', $this->getAppNamespace());
+        $namespace = rtrim($this->getAppNamespace(), '\\');
         $stub = str_replace('{{class}}', $className, $stub);
         $stub = str_replace('{{namespace}}', $namespace, $stub);
         return $stub;
