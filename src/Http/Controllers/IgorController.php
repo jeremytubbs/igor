@@ -40,9 +40,8 @@ class IgorController extends Controller
     {
         $path = ltrim($_SERVER['REQUEST_URI'], '/');
         $path = explode('/', $path);
-        $model = "Jeremytubbs\\Igor\\Models\\" . studly_case(str_singular($path));
+        $model = "Jeremytubbs\\Igor\\Models\\" . studly_case(str_singular($path[0]));
         if (in_array($path[0], $this->types)) {
-            $model = "App\\" . studly_case(str_singular($path[0]));
             $post = \App::make($model)->where('slug', '=', $slug)->with('tags', 'categories')->firstOrFail();
             return view('posts.show', compact('post'));
         }
