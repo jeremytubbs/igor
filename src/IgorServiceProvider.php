@@ -43,6 +43,7 @@ class IgorServiceProvider extends ServiceProvider
 
         $this->commands([
             'Jeremytubbs\Igor\Console\Commands\IgorWatchCommand',
+            'Jeremytubbs\Igor\Console\Commands\IgorCreateCommand',
         ]);
     }
 

@@ -1,5 +1,18 @@
 {
     "name": "jeremytubbs/igor",
+    "description": "Laravel Static Site ReAnimator",
+    "keywords": ["laravel5"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jeremytubbs",
+            "email": "jeremytubbs@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "jeremytubbs/van-de-graaff": "^0.1.0"
+    },
     "autoload": {
         "psr-4": {
             "Jeremytubbs\\Igor\\": "src/"
