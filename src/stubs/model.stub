@@ -11,7 +11,7 @@ class {{class}} extends Model
     protected $dates = ['published_at'];
 
     /**
-     * Get all of the tags for the post.
+     * Get all of the tags for the {{class}}.
      */
     public function tags()
     {
@@ -19,7 +19,7 @@ class {{class}} extends Model
     }
 
     /**
-     * Get all of the posts categories.
+     * Get all of the {{class}} categories.
      */
     public function categories()
     {

@@ -48,6 +48,7 @@ class IgorCreateCommand extends Command
         $this->name = $this->argument('name');
         $this->makeMigration();
         $this->makeModel();
+        $this->files->makeDirectory(base_path('resources/static/'. $this->getMigrationName()));
     }
 
     /**

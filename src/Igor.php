@@ -7,7 +7,7 @@ use Jeremytubbs\Igor\IgorAbstract;
 
 class Igor extends IgorAbstract
 {
-    public function reAnimate($directory, $file)
+    public function reAnimate($model, $directory, $file)
     {
         // get file as instance of Jeremytubbs/VanDeGraaff/Discharge
         $discharger = $this->setDischarger($file);
@@ -27,7 +27,7 @@ class Igor extends IgorAbstract
         // check if database id has been added to frontmatter output
         $id = isset($config['id']) ? $config['id'] : null;
         // get post or create post
-        $post = \Jeremytubbs\Igor\Models\Post::firstOrNew(['id' => $id]);
+        $post = \App::make('\\App\\'.$model)->firstOrNew(['id' => $id]);
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
             $post->title = $config['title'];
@@ -37,12 +37,31 @@ class Igor extends IgorAbstract
             $post->featured = isset($config['featured']) ? $config['featured'] : false;
             $post->published_at = isset($config['published_at']) ? $config['published_at'] : null;
             $post->path = $file;
+
+            // get custom fields from config
+            $custom_fields = null !== config("igor.custom_fields.$directory") ? config("igor.custom_fields.$directory") : [];
+            foreach ($custom_fields as $field) {
+                $post->$field = isset($config[$field]) ? $config[$field] : null;
+            }
+
             $post->save();
 
+            // regenerate and save static file with id and published_at
             $this->regenerateStatic($post->id, $file, $config, $markdown);
             clearstatcache();
             $post->last_modified = filemtime($file);
             $post->save();
+
+            // if (isset($output['categories'])) {
+            //     $oldCategories = $post->categories()->lists('name');
+            //     foreach ($oldCategories as $category) {
+            //         if (! in_array($category, $output['categories'])) {
+            //             $post->categories()->where('name', '=', $category)->delete();
+            //         }
+            //     }
+            //     $newCategories = $this->createOrFindCategories($output['categories']);
+            //     $post->categories()->saveMany($newCategories);
+            // }
 
             if (isset($config['categories'])) {
                 $categories_ids = $this->createOrFindCategories($config['categories']);

@@ -30,7 +30,7 @@ class IgorWatchCommand extends Command
     public function __construct(Igor $igor)
     {
         $this->igor = $igor;
-        $this->types = config('igor.types');
+        $this->types = config('igor.default_type') + config('igor.custom_types');
         parent::__construct();
     }
 
@@ -46,10 +46,10 @@ class IgorWatchCommand extends Command
             throw new Exception("No 'resources/static' folder.");
         }
         $this->info("It's Alive!");
-        foreach ($this->types as $directory) {
+        foreach ($this->types as $directory => $model ) {
             $files = \File::allFiles($staticPath.'/'.$directory);
             foreach ($files as $file) {
-                $post_id = $this->igor->reAnimate($directory, $file);
+                $post = $this->igor->reAnimate($model, $directory, $file);
             }
         }
     }

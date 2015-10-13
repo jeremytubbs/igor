@@ -41,6 +41,10 @@ class IgorServiceProvider extends ServiceProvider
             __DIR__.'/../database/migrations/' => database_path('/migrations'),
         ], 'migrations');
 
+        $this->publishes([
+            __DIR__.'/stubs/Post.php' => app_path('Post.php'),
+        ], 'models');
+
         $this->commands([
             'Jeremytubbs\Igor\Console\Commands\IgorWatchCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorCreateCommand',
