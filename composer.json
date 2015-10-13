@@ -11,7 +11,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "jeremytubbs/van-de-graaff": "^0.1.0"
+        "jeremytubbs/van-de-graaff": "^0.1.0",
+        "erusev/parsedown": "^1.6",
+        "erusev/parsedown-extra": "^0.7.0"
     },
     "autoload": {
         "psr-4": {

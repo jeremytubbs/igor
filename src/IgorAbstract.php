@@ -6,8 +6,16 @@ use Jeremytubbs\Igor\Models\Tag;
 use Jeremytubbs\Igor\Models\Category;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\VanDeGraaff\Generate;
+use Intervention\Image\ImageManager;
+use Illuminate\Filesystem\Filesystem;
 
 abstract class IgorAbstract {
+
+    public function __construct(Filesystem $files)
+    {
+        $this->imageManager = new ImageManager(['driver' => config('igor.image_driver')]);
+        $this->files = $files;
+    }
 
     public function setDischarger($file)
     {
@@ -47,4 +55,46 @@ abstract class IgorAbstract {
         return $category_ids;
     }
 
+    public function handleImage($id, $directory, $path)
+    {
+        // load img into memory
+        $img = $this->imageManager->make($path);
+        // get filename from path
+        $filename = pathinfo($path)['filename'];
+        // get format from config
+        $format = config('igor.image_format');
+        // set image public path
+        $img_path = public_path('images/'.$directory.'/'.$id);
+        // delete directory if it exists
+        if ($this->files->isDirectory($img_path)) {
+            $this->files->deleteDirectory($img_path);
+        }
+        // make directory for images
+        $this->files->makeDirectory($img_path, 0775, true);
+        // get image sizes from config
+        $image_sizes = config('igor.image_sizes');
+        // if 2x create larger sizes
+        if (config('igor.image_2x')) {
+            foreach ($image_sizes as $type => $size) {
+                $height = $size[0];
+                $width = $size[1];
+                $image_sizes[$type . '_2x'] = [$height * 2, $width * 2];
+            }
+        }
+        // make and save the images
+        foreach ($image_sizes as $type => $size) {
+            $height = $size[0];
+            $width = $size[1];
+            $temp = clone $img;
+            // prevent possible upsizing
+            $temp->resize($width, $height, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $temp->encode($format);
+            $temp_path = $img_path . '/' . $filename .'_' . $type . '.' . $format;
+            $this->files->put($temp_path, $temp);
+        }
+        return $img_path . '/' . $filename;
+    }
 }

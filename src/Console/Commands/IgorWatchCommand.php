@@ -3,8 +3,8 @@
 namespace Jeremytubbs\Igor\Console\Commands;
 
 use Exception;
-use Illuminate\Console\Command;
 use Jeremytubbs\Igor\Igor;
+use Illuminate\Console\Command;
 
 class IgorWatchCommand extends Command
 {

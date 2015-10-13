@@ -20,10 +20,13 @@ class CreatePostsTable extends Migration
             $table->string('config')->nullable();
             $table->mediumText('content')->nullable();
             $table->string('layout')->nullable();
+            $table->string('image')->nullable()->unique();
             $table->boolean('featured')->default(0);
             $table->boolean('published')->default(0);
             $table->timestamp('published_at')->nullable();
-            $table->string('path');
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
+            $table->string('path')->unique();
             $table->integer('last_modified');
             $table->timestamps();
         });

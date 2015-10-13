@@ -4,7 +4,6 @@ namespace Jeremytubbs\Igor;
 
 use Jeremytubbs\Igor\IgorAbstract;
 
-
 class Igor extends IgorAbstract
 {
     public function reAnimate($model, $directory, $file)
@@ -33,6 +32,7 @@ class Igor extends IgorAbstract
             $post->title = $config['title'];
             $post->slug = $config['slug'];
             $post->content = $content;
+            $post->layout = isset($config['layout']) ? $config['layout'] : null;
             $post->published = isset($config['published']) ? $config['published'] : false;
             $post->featured = isset($config['featured']) ? $config['featured'] : false;
             $post->published_at = isset($config['published_at']) ? $config['published_at'] : null;
@@ -43,25 +43,23 @@ class Igor extends IgorAbstract
             foreach ($custom_fields as $field) {
                 $post->$field = isset($config[$field]) ? $config[$field] : null;
             }
-
             $post->save();
 
             // regenerate and save static file with id and published_at
             $this->regenerateStatic($post->id, $file, $config, $markdown);
             clearstatcache();
             $post->last_modified = filemtime($file);
-            $post->save();
 
-            // if (isset($output['categories'])) {
-            //     $oldCategories = $post->categories()->lists('name');
-            //     foreach ($oldCategories as $category) {
-            //         if (! in_array($category, $output['categories'])) {
-            //             $post->categories()->where('name', '=', $category)->delete();
-            //         }
-            //     }
-            //     $newCategories = $this->createOrFindCategories($output['categories']);
-            //     $post->categories()->saveMany($newCategories);
-            // }
+            // if image is present
+            if (isset($config['image'])) {
+                $image_path = base_path('resources/static/images/'. $directory . '/' . $config['image']);
+                // if it is a valid path
+                if (file_exists($image_path)) {
+                    $public_path = $this->handleImage($post->id, $directory, $image_path);
+                    $post->image = $public_path;
+                }
+            }
+            $post->save();
 
             if (isset($config['categories'])) {
                 $categories_ids = $this->createOrFindCategories($config['categories']);
