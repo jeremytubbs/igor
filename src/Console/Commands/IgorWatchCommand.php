@@ -5,6 +5,7 @@ namespace Jeremytubbs\Igor\Console\Commands;
 use Exception;
 use Jeremytubbs\Igor\Igor;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 
 class IgorWatchCommand extends Command
 {
@@ -27,10 +28,11 @@ class IgorWatchCommand extends Command
      *
      * @return void
      */
-    public function __construct(Igor $igor)
+    public function __construct(Igor $igor, Filesystem $files)
     {
         $this->igor = $igor;
         $this->types = config('igor.default_type') + config('igor.custom_types');
+        $this->files = $files;
         parent::__construct();
     }
 
@@ -46,10 +48,12 @@ class IgorWatchCommand extends Command
             throw new Exception("No 'resources/static' folder.");
         }
         $this->info("It's Alive!");
-        foreach ($this->types as $directory => $model ) {
-            $files = \File::allFiles($staticPath.'/'.$directory);
-            foreach ($files as $file) {
-                $post = $this->igor->reAnimate($model, $directory, $file);
+        foreach ($this->types as $type => $model ) {
+            $posts = $this->files->directories($staticPath.'/'.$type);
+            foreach ($posts as $post) {
+                $directory = basename($post);
+                $path = $post.'/index.md';
+                $this->igor->reAnimate($model, $type, $directory, $path);
             }
         }
     }

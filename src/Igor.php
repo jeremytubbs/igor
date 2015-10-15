@@ -6,10 +6,10 @@ use Jeremytubbs\Igor\IgorAbstract;
 
 class Igor extends IgorAbstract
 {
-    public function reAnimate($model, $directory, $file)
+    public function reAnimate($model, $type, $directory, $path)
     {
         // get file as instance of Jeremytubbs/VanDeGraaff/Discharge
-        $discharger = $this->setDischarger($file);
+        $discharger = $this->setDischarger($path);
         // get output from discharger
         $config = $discharger->getConfig();
         $content = $discharger->getContent();
@@ -22,7 +22,7 @@ class Igor extends IgorAbstract
         }
 
         // get last modified unixtime from file
-        $lastModified = filemtime($file);
+        $lastModified = filemtime($path);
         // check if database id has been added to frontmatter output
         $id = isset($config['id']) ? $config['id'] : null;
         // get post or create post
@@ -36,26 +36,26 @@ class Igor extends IgorAbstract
             $post->published = isset($config['published']) ? $config['published'] : false;
             $post->featured = isset($config['featured']) ? $config['featured'] : false;
             $post->published_at = isset($config['published_at']) ? $config['published_at'] : null;
-            $post->path = $file;
+            $post->path = $path;
 
             // get custom fields from config
-            $custom_fields = null !== config("igor.custom_fields.$directory") ? config("igor.custom_fields.$directory") : [];
+            $custom_fields = null !== config("igor.custom_fields.$type") ? config("igor.custom_fields.$type") : [];
             foreach ($custom_fields as $field) {
                 $post->$field = isset($config[$field]) ? $config[$field] : null;
             }
             $post->save();
 
             // regenerate and save static file with id and published_at
-            $this->regenerateStatic($post->id, $file, $config, $markdown);
+            $this->regenerateStatic($post->id, $path, $config, $markdown);
             clearstatcache();
-            $post->last_modified = filemtime($file);
+            $post->last_modified = filemtime($path);
 
             // if image is present
             if (isset($config['image'])) {
-                $image_path = base_path('resources/static/images/'. $directory . '/' . $config['image']);
+                $image_path = base_path('resources/static/'.$type.'/'.$directory.'/images/'.$config['image']);
                 // if it is a valid path
                 if (file_exists($image_path)) {
-                    $public_path = $this->handleImage($post->id, $directory, $image_path);
+                    $public_path = $this->handleImage($post->id, $type, $directory, $image_path);
                     $post->image = $public_path;
                 }
             }

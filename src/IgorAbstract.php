@@ -55,7 +55,7 @@ abstract class IgorAbstract {
         return $category_ids;
     }
 
-    public function handleImage($id, $directory, $path)
+    public function handleImage($id, $type, $directory, $path)
     {
         // load img into memory
         $img = $this->imageManager->make($path);
@@ -64,7 +64,7 @@ abstract class IgorAbstract {
         // get format from config
         $format = config('igor.image_format');
         // set image public path
-        $img_path = public_path('images/'.$directory.'/'.$id);
+        $img_path = public_path('images/'.$type.'/'.$directory);
         // delete directory if it exists
         if ($this->files->isDirectory($img_path)) {
             $this->files->deleteDirectory($img_path);
