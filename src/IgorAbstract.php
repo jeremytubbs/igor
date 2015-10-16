@@ -27,9 +27,10 @@ abstract class IgorAbstract {
     public function getConfig($type)
     {
         // get global config
-        $global_config = Yaml::parse('resources/static/config.yaml');
+        $global_config = Yaml::parse(base_path('resources/static/config.yaml'));
         // get type config
         $type_config = 'resources/static/'.$type.'/config.yaml';
+
         if (file_exists($type_config)) {
             $type_config = Yaml::parse($type_config);
             if (count($type_config) >= 1) {

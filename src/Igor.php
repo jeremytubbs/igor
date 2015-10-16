@@ -34,7 +34,7 @@ class Igor extends IgorAbstract
             $post->title = $frontmatter['title'];
             $post->slug = $frontmatter['slug'];
             $post->content = $content;
-            $post->layout = isset($frontmatter['layout']) ? $frontmatter['layout'] : null;
+            $post->layout = isset($config['layout']) ? $config['layout'] : null;
             $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;
             $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
             $post->published_at = isset($frontmatter['published_at']) ? $frontmatter['published_at'] : null;

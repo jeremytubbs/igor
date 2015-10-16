@@ -12,7 +12,8 @@
     "require": {
         "php": ">=5.4.0",
         "jeremytubbs/van-de-graaff": "^0.3.1",
-        "intervention/image": "^2.3"
+        "intervention/image": "^2.3",
+        "symfony/yaml": "^2.7"
     },
     "autoload": {
         "psr-4": {
