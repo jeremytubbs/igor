@@ -45,6 +45,10 @@ class IgorServiceProvider extends ServiceProvider
             __DIR__.'/stubs/Post.php' => app_path('Post.php'),
         ], 'models');
 
+        $this->publishes([
+            __DIR__.'/../static/' => base_path('resources/static'),
+        ], 'static');
+
         $this->commands([
             'Jeremytubbs\Igor\Console\Commands\IgorWatchCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorBuildCommand',

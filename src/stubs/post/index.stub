@@ -2,9 +2,9 @@
 published: false
 title: {{title}}
 slug: {{slug}}
-# tags:
-# categories:
-# image:
+tags:
+categories:
+image:
 
 ---
 # {{title}}
