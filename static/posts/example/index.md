@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 title: Example Title
 slug: example-title
 tags:

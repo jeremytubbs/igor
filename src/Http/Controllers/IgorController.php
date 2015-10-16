@@ -22,9 +22,12 @@ class IgorController extends Controller
     public function index()
     {
         $path = ltrim($_SERVER['REQUEST_URI'], '/');
-        $model = "Jeremytubbs\\Igor\\Models\\" . studly_case(str_singular($path));
+        $model = "App\\" . studly_case(str_singular($path));
         if (in_array($path, $this->types)) {
-            $posts = \App::make($model)->with('tags', 'categories')->get();
+            $posts = \App::make($model)
+                ->with('tags', 'categories')
+                ->where('published', '=', true)
+                ->get();
             return view('posts.index', compact('posts'));
         }
         abort(404);
@@ -40,9 +43,12 @@ class IgorController extends Controller
     {
         $path = ltrim($_SERVER['REQUEST_URI'], '/');
         $path = explode('/', $path);
-        $model = "Jeremytubbs\\Igor\\Models\\" . studly_case(str_singular($path[0]));
+        $model = "App\\" . studly_case(str_singular($path[0]));
         if (in_array($path[0], $this->types)) {
-            $post = \App::make($model)->where('slug', '=', $slug)->with('tags', 'categories')->firstOrFail();
+            $post = \App::make($model)->where('slug', '=', $slug)
+                ->with('tags', 'categories')
+                ->where('published', '=', true)
+                ->firstOrFail();
             return view('posts.show', compact('post'));
         }
         abort(404);

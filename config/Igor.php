@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'types' => ['posts'],
+
     // choose between gd and imagick
     'image_driver' => 'imagick',
 

@@ -32,7 +32,7 @@ abstract class IgorAbstract {
         $type_config = 'resources/static/'.$type.'/config.yaml';
         if (file_exists($type_config)) {
             $type_config = Yaml::parse($type_config);
-                if (count($type_config) >= 1) {
+            if (count($type_config) >= 1) {
                 // replace values in global config with tyyp config
                 // add all config keys
                 foreach ($type_config as $key => $value) {
