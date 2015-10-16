@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Composer;
 use Illuminate\Console\AppNamespaceDetectorTrait;
+use Symfony\Component\Yaml\Yaml;
 
 class IgorCreateCommand extends Command
 {
@@ -49,6 +50,7 @@ class IgorCreateCommand extends Command
         $this->makeMigration();
         $this->makeModel();
         $this->files->makeDirectory(base_path('resources/static/'. $this->getMigrationName()));
+        $this->updateConfig();
     }
 
     /**
@@ -56,7 +58,7 @@ class IgorCreateCommand extends Command
      */
     protected function makeMigration()
     {
-        $path = $this->getMigrationPath($this->getMigrationName($this->name));
+        $path = $this->getMigrationPath($this->getMigrationName());
 
         if ($this->files->exists($path)) {
             return $this->error($this->name . ' already exists!');
@@ -73,7 +75,7 @@ class IgorCreateCommand extends Command
      */
     protected function makeModel()
     {
-        $path = $this->getModelPath($this->getModelName($this->name));
+        $path = $this->getModelPath($this->getModelName());
 
         if ($this->files->exists($path)) {
             return $this->error($this->name . ' already exists!');
@@ -82,6 +84,16 @@ class IgorCreateCommand extends Command
         $this->files->put($path, $this->compileModelStub());
 
         $this->info('Model created successfully.');
+    }
+
+    protected function updateConfig()
+    {
+        $config_path = base_path('resources/static/config.yaml');
+        $config = $this->files->get($config_path);
+        $config = Yaml::parse($config);
+        $config['types'][] = $this->getMigrationName();
+        $config = Yaml::dump($config, 2);
+        $this->files->put($config_path, $config);
     }
 
     protected function getMigrationPath($name)
