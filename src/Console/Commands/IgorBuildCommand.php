@@ -9,7 +9,7 @@ use Illuminate\Foundation\Composer;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Symfony\Component\Yaml\Yaml;
 
-class IgorCreateCommand extends Command
+class IgorBuildCommand extends Command
 {
     use AppNamespaceDetectorTrait;
 
@@ -18,14 +18,14 @@ class IgorCreateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'igor:create {name}';
+    protected $signature = 'igor:build {name}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create custom migration and model.';
+    protected $description = 'Build a custom static post type.';
 
     /**
      * Create a new command instance.

@@ -41,7 +41,7 @@ class Igor extends IgorAbstract
             $post->path = $path;
 
             // get custom fields from config
-            $custom_fields = null !== $config['custom_fields'] ? $config['custom_fields'] : [];
+            $custom_fields = isset($config['custom_fields']) ? $config['custom_fields'] : [];
             foreach ($custom_fields as $field) {
                 $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
             }
