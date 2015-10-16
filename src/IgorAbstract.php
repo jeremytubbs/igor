@@ -8,6 +8,7 @@ use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\VanDeGraaff\Generate;
 use Intervention\Image\ImageManager;
 use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Yaml;
 
 abstract class IgorAbstract {
 
@@ -21,6 +22,23 @@ abstract class IgorAbstract {
     {
         $file = new Discharge(file_get_contents($file));
         return $file;
+    }
+
+    public function getConfig($type)
+    {
+        // get global config
+        $global_config = Yaml::parse('resources/static/config.yaml');
+        // get type config
+        $type_config = 'resources/static/'.$type.'/config.yaml';
+        if (file_exists($type_config)) {
+            $type_config = Yaml::parse($type_config);
+            // replace values in global config with tyyp config
+            // add all config keys
+            foreach ($type_config as $key => $value) {
+                $global_config[$key] = $value;
+            }
+        }
+        return $global_config;
     }
 
     public function regenerateStatic($id, $file, $config, $markdown)
@@ -57,6 +75,7 @@ abstract class IgorAbstract {
 
     public function handleImage($id, $type, $directory, $path)
     {
+        $config = $this->getConfig($type);
         // load img into memory
         $img = $this->imageManager->make($path);
         // get filename from path
@@ -72,7 +91,7 @@ abstract class IgorAbstract {
         // make directory for images
         $this->files->makeDirectory($img_path, 0775, true);
         // get image sizes from config
-        $image_sizes = config('igor.image_sizes');
+        $image_sizes = $config['image_sizes'];
         // if 2x create larger sizes
         if (config('igor.image_2x')) {
             foreach ($image_sizes as $type => $size) {
