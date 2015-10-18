@@ -76,47 +76,57 @@ abstract class IgorAbstract {
         return $category_ids;
     }
 
-    public function handleImage($id, $type, $directory, $path)
+    public function handleImage($id, $type, $directory, $image)
     {
         $config = $this->getConfig($type);
-        // load img into memory
-        $img = $this->imageManager->make($path);
-        // get filename from path
-        $filename = pathinfo($path)['filename'];
         // get format from config
         $format = config('igor.image_format');
+        // get image sizes from config
+        $image_sizes = $config['image_sizes'];
+        // if 2x create larger sizes
+        if (config('igor.image_2x')) {
+            foreach ($image_sizes as $style => $size) {
+                $height = $size[0];
+                $width = $size[1];
+                $image_sizes[$style . '_2x'] = [$height * 2, $width * 2];
+            }
+        }
+        // set static path for images
+        $static_img_path = base_path('resources/static/'.$type.'/'.$directory.'/images/');
+        // frontmatter image path
+        $frontmatter_img = $static_img_path . $image;
         // set image public path
         $img_path = public_path('images/'.$type.'/'.$directory);
         // delete directory if it exists
         if ($this->files->isDirectory($img_path)) {
             $this->files->deleteDirectory($img_path);
         }
-        // make directory for images
+        // make directory for public images
         $this->files->makeDirectory($img_path, 0775, true);
-        // get image sizes from config
-        $image_sizes = $config['image_sizes'];
-        // if 2x create larger sizes
-        if (config('igor.image_2x')) {
-            foreach ($image_sizes as $type => $size) {
+        // get all files in the static images folder
+        $files = $this->files->allFiles($static_img_path);
+
+        foreach ($files as $file) {
+            // load img into memory
+            $img = $this->imageManager->make($file);
+            // get filename from path
+            $filename = pathinfo($file)['filename'];
+            var_dump($filename);
+            // make and save the images
+            foreach ($image_sizes as $style => $size) {
                 $height = $size[0];
                 $width = $size[1];
-                $image_sizes[$type . '_2x'] = [$height * 2, $width * 2];
+                $temp = clone $img;
+                // prevent possible upsizing
+                $temp->resize($width, $height, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+                $temp->encode($format);
+                $temp_path = $img_path . '/' . $filename .'_' . $style . '.' . $format;
+                $this->files->put($temp_path, $temp);
             }
         }
-        // make and save the images
-        foreach ($image_sizes as $type => $size) {
-            $height = $size[0];
-            $width = $size[1];
-            $temp = clone $img;
-            // prevent possible upsizing
-            $temp->resize($width, $height, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-            $temp->encode($format);
-            $temp_path = $img_path . '/' . $filename .'_' . $type . '.' . $format;
-            $this->files->put($temp_path, $temp);
-        }
-        return $img_path . '/' . $filename;
+        return $image;
     }
 }

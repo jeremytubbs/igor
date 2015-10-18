@@ -17,7 +17,6 @@ Better documentation coming soon!
 
 Todo -
 
-- process all images in folder for a post
 - add type to config igor.php on build
 - set user_id for post
 - set character limit for meta description

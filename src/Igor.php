@@ -55,14 +55,11 @@ class Igor extends IgorAbstract
             clearstatcache();
             $post->last_modified = filemtime($index_path);
 
-            // if image is present
-            if (isset($frontmatter['image'])) {
-                $image_path = base_path('resources/static/'.$type.'/'.$directory.'/images/'.$frontmatter['image']);
-                // if it is a valid path
-                if (file_exists($image_path)) {
-                    $public_path = $this->handleImage($post->id, $type, $directory, $image_path);
-                    $post->image = $public_path;
-                }
+            $images_path = base_path('resources/static/'.$type.'/'.$directory.'/images/');
+            // if image is present or images folder has images
+            if (isset($frontmatter['image']) || count($this->files->allFiles($images_path)) >= 1) {
+                $public_path = $this->handleImage($post->id, $type, $directory, $frontmatter['image']);
+                $post->image = $public_path;
             }
             $post->save();
 
