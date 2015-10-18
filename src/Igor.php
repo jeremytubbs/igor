@@ -32,12 +32,14 @@ class Igor extends IgorAbstract
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
             $post->title = $frontmatter['title'];
-            $post->slug = $frontmatter['slug'];
+            $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
             $post->content = $content;
             $post->layout = isset($config['layout']) ? $config['layout'] : null;
             $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;
             $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
             $post->published_at = isset($frontmatter['published_at']) ? $frontmatter['published_at'] : null;
+            $post->meta_title = isset($frontmatter['meta_title']) ? $frontmatter['meta_title'] : $frontmatter['title'];
+            $post->meta_title = isset($frontmatter['description']) ? $frontmatter['description'] : null;
             $post->path = $path;
 
             // get custom fields from config
