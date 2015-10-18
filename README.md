@@ -8,11 +8,21 @@ Add service provider to app/config -
 Jeremytubbs\Igor\IgorServiceProvider::class,
 `
 
+Then run -
+`
 php artisan vendor:publish
+`
+
+Better documentation coming soon!
 
 Todo -
 
-- config for default posts route name
+- process all images in folder for a post
+- add type to config igor.php on build
+- set user_id for post
+- set character limit for meta description
+- auto fill meta description from content
+- set post excerpt
 - use publish date in folder names?
 - add custom fields via build command
 - use custom fields to build migration
