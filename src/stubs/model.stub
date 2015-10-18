@@ -2,27 +2,10 @@
 
 namespace {{namespace}};
 
-use Illuminate\Database\Eloquent\Model;
+use Jeremytubbs\Igor\Models\Post as Igor{{class}};
 
-class {{class}} extends Model
+class {{class}} extends Igor{{class}}
 {
-    protected $guarded = [];
+    use \Jeremytubbs\Igor\Traits\SluggerTrait;
 
-    protected $dates = ['published_at'];
-
-    /**
-     * Get all of the tags for the {{class}}.
-     */
-    public function tags()
-    {
-        return $this->morphToMany('Jeremytubbs\Igor\Models\Tag', 'taggable')->withTimestamps();
-    }
-
-    /**
-     * Get all of the {{class}} categories.
-     */
-    public function categories()
-    {
-        return $this->morphToMany('Jeremytubbs\Igor\Models\Category', 'categorable')->withTimestamps();
-    }
 }
