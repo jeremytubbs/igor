@@ -28,6 +28,7 @@ class CreatePostsTable extends Migration
             $table->string('meta_description')->nullable();
             $table->string('path')->unique();
             $table->integer('last_modified');
+            // add your custom fields
             $table->timestamps();
         });
     }
