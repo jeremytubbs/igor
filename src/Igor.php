@@ -24,13 +24,14 @@ class Igor extends IgorAbstract
         }
 
         // get last modified unixtime from file
-        $lastModified = filemtime($path);
+        $lastModified = filemtime($index_path);
         // check if database id has been added to frontmatter output
         $id = isset($frontmatter['id']) ? $frontmatter['id'] : null;
         // get post or create post
         $post = \App::make('\\App\\'.$model)->firstOrNew(['id' => $id]);
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
+            var_dump($frontmatter['title']);
             $post->title = $frontmatter['title'];
             $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
             $post->content = $content;
@@ -52,7 +53,7 @@ class Igor extends IgorAbstract
             // regenerate and save static file with id and published_at
             $this->regenerateStatic($post->id, $index_path, $frontmatter, $markdown);
             clearstatcache();
-            $post->last_modified = filemtime($path);
+            $post->last_modified = filemtime($index_path);
 
             // if image is present
             if (isset($frontmatter['image'])) {
