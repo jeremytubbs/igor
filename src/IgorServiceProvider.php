@@ -21,7 +21,11 @@ class IgorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if (! $this->app->routesAreCached()) {
+            require __DIR__.'/Http/routes.php';
+        }
+
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'lair');
     }
 
     /**
@@ -31,8 +35,6 @@ class IgorServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        include __DIR__.'/Http/routes.php';
-
         $this->publishes([
             __DIR__.'/../config/igor.php' => config_path('igor.php'),
         ], 'config');
