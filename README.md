@@ -18,7 +18,6 @@ Better documentation coming soon!
 Todo -
 
 - add type to config igor.php on build
-- set user_id for post
 - set character limit for meta description
 - auto fill meta description from content
 - set post excerpt
