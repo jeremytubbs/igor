@@ -13,7 +13,7 @@ class Category extends Model
      */
     public function posts()
     {
-        return $this->morphedByMany('Jeremytubbs\Igor\Models\Post', 'categorable');
+        return $this->morphedByMany('App\Post', 'categorable');
     }
 
     /**
@@ -21,6 +21,6 @@ class Category extends Model
      */
     public function projects()
     {
-        return $this->morphedByMany('Jeremytubbs\Igor\Models\Project', 'categorable');
+        return $this->morphedByMany('App\Project', 'categorable');
     }
 }

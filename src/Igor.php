@@ -33,7 +33,7 @@ class Igor extends IgorAbstract
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
             var_dump($frontmatter['title']);
-            $post->user_id = User::whereName($frontmatter['name'])->firstOrFail()->pluck('id');
+            $post->user_id = isset($frontmatter['name']) ? User::whereName($frontmatter['name'])->firstOrFail()->pluck('id') : null;
             $post->title = $frontmatter['title'];
             $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
             $post->content = $content;
