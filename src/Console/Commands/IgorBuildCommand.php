@@ -51,6 +51,7 @@ class IgorBuildCommand extends Command
         $this->makeModel();
         $this->files->makeDirectory(base_path('resources/static/'. $this->getMigrationName()));
         $this->updateConfig();
+        $this->files->put(config_path('igor.php'), $this->updateIgorConfig());
     }
 
     /**
@@ -64,7 +65,7 @@ class IgorBuildCommand extends Command
             return $this->error($this->name . ' already exists!');
         }
 
-        $this->files->put($path, $this->compileMigrationStub());
+        $this->files->put($path, $this->compilePostMigrationStub());
 
         $this->info('Migration created successfully.');
         $this->composer->dumpAutoloads();
@@ -107,14 +108,22 @@ class IgorBuildCommand extends Command
         return $this->laravel['path'] . '/' . str_replace('\\', '/', $name) . '.php';
     }
 
-    protected function compileMigrationStub()
+    protected function compilePostMigrationStub()
     {
-        $stub = $this->files->get(__DIR__ . '/../../stubs/migration.stub');
+        $stub = $this->files->get(__DIR__ . '/../../stubs/postMigration.stub');
         $className = ucwords(str_plural(camel_case($this->name)));
         $tableName = $this->getMigrationName();
         $stub = str_replace('{{class}}', $className, $stub);
         $stub = str_replace('{{table}}', $tableName, $stub);
         return $stub;
+    }
+
+    protected function updateIgorConfig()
+    {
+        $config = $this->files->get(config_path('igor.php'));
+        $typeName = str_plural(str_slug($this->name));
+        $config = str_replace("],//{{types}}", ", '$typeName'],//{{types}}", $config);
+        return $config;
     }
 
     protected function compileModelStub()
