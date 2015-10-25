@@ -56,6 +56,7 @@ class IgorNewCommand extends Command
         }
 
         $this->files->makeDirectory($path);
+        $this->files->makeDirectory($path.'/images');
         $this->files->put($path.'/index.md', $this->compilePostStub());
 
         $this->info('New '. str_singular($this->type) . ' created: ' . $this->title);
