@@ -1,6 +1,5 @@
 name: 'John Doe'
 types:
-    - posts
 image_sizes:
     thumb: [100, 200]
     large: [300, 400]

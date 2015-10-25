@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Jeremytubbs\Igor\Models\Post as IgorPost;
+use Jeremytubbs\Igor\Models\Tag as IgorTag;
 
-class Post extends IgorPost
+class Tag extends IgorTag
 {
     use \Jeremytubbs\Igor\Traits\SluggerTrait;
 

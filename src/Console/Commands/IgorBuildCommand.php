@@ -47,10 +47,10 @@ class IgorBuildCommand extends Command
     public function handle()
     {
         $this->name = $this->argument('name');
-        $this->makeMigration();
         $this->makeModel();
+        $this->makeMigration();
         $this->files->makeDirectory(base_path('resources/static/'. $this->getMigrationName()));
-        $this->updateConfig();
+        $this->updateStaticConfig();
         $this->files->put(config_path('igor.php'), $this->updateIgorConfig());
     }
 
@@ -87,7 +87,7 @@ class IgorBuildCommand extends Command
         $this->info('Model created successfully.');
     }
 
-    protected function updateConfig()
+    protected function updateStaticConfig()
     {
         $config_path = base_path('resources/static/config.yaml');
         $config = $this->files->get($config_path);
@@ -122,7 +122,8 @@ class IgorBuildCommand extends Command
     {
         $config = $this->files->get(config_path('igor.php'));
         $typeName = str_plural(str_slug($this->name));
-        $config = str_replace("],//{{types}}", ", '$typeName'],//{{types}}", $config);
+        $config = str_replace("'],//{{types}}", "', '$typeName'],//{{types}}", $config);
+        $config = str_replace("[],//{{types}}", "['$typeName'],//{{types}}", $config);
         return $config;
     }
 

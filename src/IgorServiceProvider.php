@@ -24,8 +24,6 @@ class IgorServiceProvider extends ServiceProvider
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/Http/routes.php';
         }
-
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'lair');
     }
 
     /**
@@ -36,20 +34,21 @@ class IgorServiceProvider extends ServiceProvider
     public function register()
     {
         $this->publishes([
-            __DIR__.'/../config/igor.php' => config_path('igor.php'),
-        ], 'config');
+            __DIR__.'/../static/' => base_path('resources/static'),
+        ], 'static');
 
         $this->publishes([
             __DIR__.'/../database/migrations/' => database_path('/migrations'),
         ], 'migrations');
 
         $this->publishes([
-            __DIR__.'/stubs/Post.php' => app_path('Post.php'),
-        ], 'models');
+            __DIR__.'/../config/igor.php' => config_path('igor.php'),
+        ], 'config');
 
         $this->publishes([
-            __DIR__.'/../static/' => base_path('resources/static'),
-        ], 'static');
+            __DIR__.'/stubs/Models/Tag.php' => app_path('Tag.php'),
+            __DIR__.'/stubs/Models/Category.php' => app_path('Category.php'),
+        ], 'models');
 
         $this->commands([
             'Jeremytubbs\Igor\Console\Commands\IgorWatchCommand',

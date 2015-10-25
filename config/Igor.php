@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'types' => ['posts'],
+    'types' => [],//{{types}} leave for build command
 
     // choose between gd and imagick
     'image_driver' => 'imagick',
