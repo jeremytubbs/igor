@@ -82,7 +82,7 @@ class IgorBuildCommand extends Command
             return $this->error($this->name . ' already exists!');
         }
 
-        $this->files->put($path, $this->compileModelStub());
+        $this->files->put($path, $this->compilePostModelStub());
 
         $this->info('Model created successfully.');
     }
@@ -126,9 +126,9 @@ class IgorBuildCommand extends Command
         return $config;
     }
 
-    protected function compileModelStub()
+    protected function compilePostModelStub()
     {
-        $stub = $this->files->get(__DIR__ . '/../../stubs/model.stub');
+        $stub = $this->files->get(__DIR__ . '/../../stubs/postModel.stub');
         $className = $this->getModelName();
         $namespace = rtrim($this->getAppNamespace(), '\\');
         $stub = str_replace('{{class}}', $className, $stub);
