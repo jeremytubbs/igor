@@ -6,14 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class IgorServiceProvider extends ServiceProvider
 {
-
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
     /**
      * Bootstrap the application events.
      *
@@ -21,9 +13,20 @@ class IgorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Load routes
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/Http/routes.php';
         }
+
+        // Publish the migration
+        $this->publishes([
+            __DIR__.'/../database/migrations/' => database_path('/migrations'),
+        ], 'migrations');
+
+        // Publish static directory with config.yaml
+        $this->publishes([
+            __DIR__.'/../static/' => base_path('resources/static'),
+        ], 'static');
     }
 
     /**
@@ -33,14 +36,6 @@ class IgorServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->publishes([
-            __DIR__.'/../static/' => base_path('resources/static'),
-        ], 'static');
-
-        $this->publishes([
-            __DIR__.'/../database/migrations/' => database_path('/migrations'),
-        ], 'migrations');
-
         $this->publishes([
             __DIR__.'/../config/igor.php' => config_path('igor.php'),
         ], 'config');
@@ -54,7 +49,6 @@ class IgorServiceProvider extends ServiceProvider
             'Jeremytubbs\Igor\Console\Commands\IgorWatchCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorBuildCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorNewCommand',
-
         ]);
     }
 
