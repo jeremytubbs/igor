@@ -2,6 +2,8 @@
 
 Igor is a simple yet powerful Laravel Package that transforms plain text into blog-aware dynamic content. Custom post content types can easily be built and new posts created using Artisan commands. All content types can be linked togther using Tags or Categories. Igor utilizes standard YAML frontmatter and Markdown within an opinionated folder structure to seed your content into its database schema. Igor will even process and save derivatives of images to your public directory.
 
+**FYI - This project is pre-Alpha and will have breaking changes.**
+
 - [Installation](#installation)
 	- [Composer](#composer)
 	- [Service Provider](#service-provider)
@@ -55,7 +57,7 @@ php artisan igor:watch
 resources/
 	└──static/
 		├── config.yaml
-		└──projects/
+		└── projects/
 			├── config.yaml
 			├── hello-world/
 			|	├── images/

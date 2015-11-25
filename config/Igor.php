@@ -1,8 +1,10 @@
 <?php
 
 return [
-    'types' => [],//{{types}} leave for build command
+	// your custom post types
+    'types' => [],
 
+    // custom fields for your post types
     'custom_fields' => [
         //'project' => ['started_at', 'completed_at'],
     ],

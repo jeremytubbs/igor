@@ -51,7 +51,6 @@ class IgorBuildCommand extends Command
         $this->makeMigration();
         $this->files->makeDirectory(base_path('resources/static/'. $this->getMigrationName()));
         $this->updateStaticConfig();
-        $this->files->put(config_path('igor.php'), $this->updateIgorConfig());
     }
 
     /**
@@ -116,15 +115,6 @@ class IgorBuildCommand extends Command
         $stub = str_replace('{{class}}', $className, $stub);
         $stub = str_replace('{{table}}', $tableName, $stub);
         return $stub;
-    }
-
-    protected function updateIgorConfig()
-    {
-        $config = $this->files->get(config_path('igor.php'));
-        $typeName = str_plural(str_slug($this->name));
-        $config = str_replace("'],//{{types}}", "', '$typeName'],//{{types}}", $config);
-        $config = str_replace("[],//{{types}}", "['$typeName'],//{{types}}", $config);
-        return $config;
     }
 
     protected function compilePostModelStub()
