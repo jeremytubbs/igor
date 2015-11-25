@@ -1,7 +1,7 @@
 {
     "name": "jeremytubbs/igor",
     "description": "Laravel Static Site ReAnimator",
-    "keywords": ["laravel5"],
+    "keywords": ["laravel5", "laravel"],
     "license": "MIT",
     "authors": [
         {
