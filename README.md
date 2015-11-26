@@ -55,26 +55,29 @@ php artisan igor:watch
 ## Example Folder Structure
 ```
 resources/
-	└──static/
+└── static/
+	├── config.yaml
+	└── projects/
 		├── config.yaml
-		└── projects/
-			├── config.yaml
-			├── hello-world/
-			|	├── images/
-			|	└── index.md
-			└── foo-bar/
-				├── images/
-				└── index.md
+		├── hello-world/
+		|	├── images/
+		|	└── index.md
+		└── foo-bar/
+			├── images/
+			└── index.md
 ```
 
 
-Todo -
+Todo Core:
 - more documentation!
 - config.yaml generated with custom post type
 - pages?
+
+
+Todo Features:
 - set character limit for meta description
-- auto fill meta description from content
-- set post excerpt
+- RSS feed
+- extensions?
 - add custom fields via build command
 - use custom fields to build migration
 - register custom events in static config

@@ -41,11 +41,11 @@ class Igor extends IgorAbstract
             $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
             $post->published_at = isset($frontmatter['published_at']) ? $frontmatter['published_at'] : null;
             $post->meta_title = isset($frontmatter['meta_title']) ? $frontmatter['meta_title'] : $frontmatter['title'];
-            $post->meta_description = isset($frontmatter['description']) ? $frontmatter['description'] : null;
+            $post->meta_description = isset($frontmatter['meta_description']) ? $frontmatter['meta_description'] : $this->getExcerpt($content, $config['excerpt_separator']);
             $post->path = $path;
 
             // get custom fields from config
-            $custom_fields = isset($config["custom_fields.$type"]) ? $config["custom_fields.$type"] : [];
+            $custom_fields = null !== config("custom_fields.$type") ? config("custom_fields.$type") : [];
             foreach ($custom_fields as $field) {
                 $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
             }

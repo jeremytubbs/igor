@@ -76,6 +76,28 @@ abstract class IgorAbstract {
         return $category_ids;
     }
 
+    public function getExcerpt($content, $separator)
+    {
+        $excerpt = null;
+
+        if (strpos($content, $separator)) {
+            $excerpt = strstr($content, $separator, true);
+            $excerpt = strstr($excerpt, '<p>');
+            $excerpt = strip_tags($excerpt);
+            $excerpt = substr($excerpt, 0, 155);
+            return $excerpt;
+        }
+
+        if (strpos($content, '<p>')) {
+            $excerpt = strstr($content, '<p>');
+            $excerpt = strip_tags($excerpt);
+            $excerpt = substr($excerpt, 0, 155);
+            return $excerpt;
+        }
+
+        return $excerpt;
+    }
+
     public function handleImage($id, $type, $directory, $image)
     {
         $config = $this->getConfig($type);

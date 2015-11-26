@@ -20,12 +20,12 @@ class Create{{class}}Table extends Migration
             $table->string('config')->nullable();
             $table->mediumText('content')->nullable();
             $table->string('layout')->nullable();
-            $table->string('image')->nullable()->unique();
+            $table->string('image')->nullable();
             $table->boolean('featured')->default(0);
             $table->boolean('published')->default(0);
             $table->timestamp('published_at')->nullable();
-            $table->string('meta_title')->nullable();
-            $table->string('meta_description')->nullable();
+            $table->string('meta_title', 55)->unique()->nullable();
+            $table->string('meta_description', 155)->nullable();
             $table->string('path')->unique();
             $table->integer('last_modified');
             // add your custom fields
