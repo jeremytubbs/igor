@@ -6,7 +6,7 @@ return [
 
     // custom fields for your post types
     'custom_fields' => [
-        //'project' => ['started_at', 'completed_at'],
+        //'projects' => ['started_at', 'completed_at'],
     ],
 
     // choose between gd and imagick

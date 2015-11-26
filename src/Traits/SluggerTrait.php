@@ -9,10 +9,16 @@ trait SluggerTrait {
     public function setSlugAttribute($title)
     {
         $slug = str_slug($title);
-        // check that slug is not set or that current slug no the same
+        $i = 1;
         if (! isset($this->attributes['slug']) || $this->attributes['slug'] != $slug) {
-            $slugCount = count($this->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->get());
-            $this->attributes['slug'] = $slugCount > 0 ? "{$slug}-{$slugCount}" : $slug;
+            $slugs = $this->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->lists('slug');
+            if (count($slugs) < 1) $this->attributes['slug'] = $slug;
+
+            while(! isset($this->attributes['slug'])) {
+                $slugger = "{$slug}-{$i}";
+                if (! in_array($slugger, (array)$slugs)) $this->attributes['slug'] = $slugger;
+                $i++;
+            }
         }
     }
 }

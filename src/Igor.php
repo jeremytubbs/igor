@@ -32,7 +32,6 @@ class Igor extends IgorAbstract
         $post = \App::make('\\App\\'.$model)->firstOrNew(['id' => $id]);
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
-            var_dump($frontmatter['title']);
             $post->user_id = isset($frontmatter['name']) ? User::whereName($frontmatter['name'])->firstOrFail()->pluck('id') : null;
             $post->title = $frontmatter['title'];
             $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
@@ -46,11 +45,16 @@ class Igor extends IgorAbstract
             $post->path = $path;
 
             // get custom fields from config
-            $custom_fields = isset($config['custom_fields']) ? $config['custom_fields'] : [];
+            $custom_fields = isset($config["custom_fields.$type"]) ? $config["custom_fields.$type"] : [];
             foreach ($custom_fields as $field) {
                 $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
             }
             $post->save();
+
+            // add the slug to frontmatter
+            if (! isset($frontmatter['slug']) || $frontmatter['slug'] != $post->slug) {
+                $frontmatter = ['slug' => $post->slug] + $frontmatter;
+            }
 
             // regenerate and save static file with id and published_at
             $this->regenerateStatic($post->id, $index_path, $frontmatter, $markdown);
