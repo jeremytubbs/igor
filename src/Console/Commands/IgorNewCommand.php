@@ -66,7 +66,6 @@ class IgorNewCommand extends Command
     {
         $stub = $this->files->get(__DIR__ . '/../../stubs/post/index.stub');
         $stub = str_replace('{{title}}', $this->title, $stub);
-        $stub = str_replace('{{slug}}', $this->slug, $stub);
         return $stub;
     }
 }
