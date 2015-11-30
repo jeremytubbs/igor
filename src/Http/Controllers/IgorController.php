@@ -34,10 +34,10 @@ class IgorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $slug)
+    public function showPost(Request $request, $slug)
     {
         $type = array_search($request->segment(1), config("igor.type_routes"));
         $model = "App\\" . $type;
@@ -46,5 +46,19 @@ class IgorController extends Controller
             ->where('published', '=', true)
             ->firstOrFail();
         return view('posts.show', compact('post'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  $slug
+     * @return \Illuminate\Http\Response
+     */
+    public function showPage($slug)
+    {
+        $page = \App::make("App\\Page")->where('slug', '=', $slug)
+            ->where('published', '=', true)
+            ->firstOrFail();
+        return view('pages.show', compact('page'));
     }
 }

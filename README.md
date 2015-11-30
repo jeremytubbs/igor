@@ -70,8 +70,6 @@ resources/
 
 Todo Core:
 - more documentation!
-- pages?
-
 
 Todo Features:
 - set character limit for meta description

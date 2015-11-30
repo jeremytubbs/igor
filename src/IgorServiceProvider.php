@@ -43,6 +43,7 @@ class IgorServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/stubs/Models/Tag.php' => app_path('Tag.php'),
             __DIR__.'/stubs/Models/Category.php' => app_path('Category.php'),
+            __DIR__.'/stubs/Models/Page.php' => app_path('Page.php'),
         ], 'models');
 
         $this->commands([

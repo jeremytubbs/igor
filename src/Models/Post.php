@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $dates = ['published_at'];
 
@@ -24,5 +24,13 @@ class Post extends Model
     public function categories()
     {
         return $this->morphToMany('Jeremytubbs\Igor\Models\Category', 'categorable')->withTimestamps();
+    }
+
+    /**
+     * Get the user.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 }
