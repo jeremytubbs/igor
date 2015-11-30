@@ -75,7 +75,7 @@ Todo Core:
 
 Todo Features:
 - set character limit for meta description
-- RSS feed
+- RSS feed / Sitemap?
 - extensions?
 - add custom fields via build command
 - use custom fields to build migration
