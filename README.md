@@ -70,7 +70,6 @@ resources/
 
 Todo Core:
 - more documentation!
-- config.yaml generated with custom post type
 - pages?
 
 

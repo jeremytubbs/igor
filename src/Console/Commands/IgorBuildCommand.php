@@ -51,6 +51,7 @@ class IgorBuildCommand extends Command
         $this->makeMigration();
         $this->files->makeDirectory(base_path('resources/static/'. $this->getMigrationName()));
         $this->updateStaticConfig();
+        $this->makePostConfig();
     }
 
     /**
@@ -84,6 +85,14 @@ class IgorBuildCommand extends Command
         $this->files->put($path, $this->compilePostModelStub());
 
         $this->info('Model created successfully.');
+    }
+
+    protected function makePostConfig()
+    {
+        $name = $this->getMigrationName();
+        $post_config_path = base_path("resources/static/$name/config.yaml");
+        $this->files->put($post_config_path, '# Override main config.yaml here.');
+
     }
 
     protected function updateStaticConfig()
