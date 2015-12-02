@@ -57,12 +57,16 @@ php artisan igor:watch
 resources/
 └── static/
 	├── config.yaml
+	├── pages/
+	|	└── about/
+	|		├── images/
+	|		└── index.md
 	└── projects/
 		├── config.yaml
-		├── hello-world/
+		├── foo-bar/
 		|	├── images/
 		|	└── index.md
-		└── foo-bar/
+		└── hello-world/
 			├── images/
 			└── index.md
 ```
