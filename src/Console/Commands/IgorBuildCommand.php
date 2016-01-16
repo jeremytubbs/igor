@@ -5,7 +5,7 @@ namespace Jeremytubbs\Igor\Console\Commands;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\Composer;
+use Illuminate\Support\Composer;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Symfony\Component\Yaml\Yaml;
 
