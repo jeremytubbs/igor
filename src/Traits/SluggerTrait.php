@@ -2,8 +2,6 @@
 
 namespace Jeremytubbs\Igor\Traits;
 
-use Illuminate\Support\Facades\DB;
-
 trait SluggerTrait {
 
     public function setSlugAttribute($title)
