@@ -8,7 +8,7 @@ use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\VanDeGraaff\Generate;
 use Intervention\Image\ImageManager;
 use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Parser;
 
 abstract class IgorAbstract {
 
@@ -26,15 +26,16 @@ abstract class IgorAbstract {
 
     public function getConfig($type)
     {
+        $yaml = new Parser();
         // get global config
-        $global_config = Yaml::parse(base_path('resources/static/config.yaml'));
+        $global_config = $yaml->parse(file_get_contents(base_path('resources/static/config.yaml')));
         // get type config
-        $type_config = 'resources/static/'.$type.'/config.yaml';
+        $type_config_path = base_path('resources/static/'.$type.'/config.yaml');
 
-        if (file_exists($type_config)) {
-            $type_config = Yaml::parse($type_config);
-            if (count($type_config) >= 1) {
-                // replace values in global config with tyyp config
+        if (file_exists($type_config_path)) {
+            $type_config = $yaml->parse(file_get_contents($type_config_path));
+            if (is_array($type_config) && count($type_config) >= 1) {
+                // replace values in global config with type config
                 // add all config keys
                 foreach ($type_config as $key => $value) {
                     $global_config[$key] = $value;
