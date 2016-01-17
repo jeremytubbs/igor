@@ -48,7 +48,7 @@ abstract class IgorAbstract {
     public function regenerateStatic($id, $file, $config, $markdown)
     {
         // add post id to config
-        $config = ['id' => $id] + $config;
+        $config = $this->prependToFrontmatter($frontmatter, 'id', $id);
         $generator = new Generate($config, rtrim($markdown));
         file_put_contents($file, $generator->makeStatic());
     }
@@ -151,5 +151,15 @@ abstract class IgorAbstract {
             }
         }
         return $image;
+    }
+
+    public function appendToFrontmatter($frontmatter, $key, $value)
+    {
+        return $frontmatter + [$key => $value];
+    }
+
+    public function prependToFrontmatter($frontmatter, $key, $value)
+    {
+        return [$key => $value] + $frontmatter;
     }
 }
