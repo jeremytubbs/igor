@@ -7,16 +7,24 @@ use App\User;
 
 class Igor extends IgorAbstract
 {
-    public function reAnimate($model, $type, $directory, $path)
+    public function reAnimate($path)
     {
+        $path_parts = pathinfo($path);
+
+        $post_type = basename($path_parts['dirname']);
+        $post_model = ucfirst(str_singular($post_type));
+        $post_directory = $path_parts['basename'];
         $index_path = $path.'/index.md';
+
         // get file as instance of Jeremytubbs/VanDeGraaff/Discharge
         $discharger = $this->setDischarger($index_path);
         // get output from discharger
         $frontmatter = $discharger->getFrontmatter();
         $content = $discharger->getContent();
         $markdown = $discharger->getMarkdown();
-        $config = $this->getConfig($type);
+
+        // get config from staic directories
+        $config = $this->getConfig($post_type);
 
         // check if published_at is part of frontmatter if published is true
         if (! isset($frontmatter['published_at']) && $frontmatter['published']) {
@@ -29,7 +37,7 @@ class Igor extends IgorAbstract
         // check if database id has been added to frontmatter output
         $id = isset($frontmatter['id']) ? $frontmatter['id'] : null;
         // get post or create post
-        $post = \App::make('\\App\\'.$model)->firstOrNew(['id' => $id]);
+        $post = \App::make('\\App\\'.$post_model)->firstOrNew(['id' => $id]);
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
             $post->user_id = isset($frontmatter['name']) ? User::whereName($frontmatter['name'])->firstOrFail()->pluck('id') : null;
@@ -37,15 +45,15 @@ class Igor extends IgorAbstract
             $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
             $post->content = $content;
             $post->layout = isset($config['layout']) ? $config['layout'] : null;
-            $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;
             $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
+            $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;
             $post->published_at = isset($frontmatter['published_at']) ? $frontmatter['published_at'] : null;
             $post->meta_title = isset($frontmatter['meta_title']) ? $frontmatter['meta_title'] : $frontmatter['title'];
             $post->meta_description = isset($frontmatter['meta_description']) ? $frontmatter['meta_description'] : $this->getExcerpt($content, $config['excerpt_separator']);
             $post->path = $path;
 
             // get custom fields from config
-            $custom_fields = null !== config("custom_fields.$type") ? config("custom_fields.$type") : [];
+            $custom_fields = null !== config("custom_fields.$post_type") ? config("custom_fields.$post_type") : [];
             foreach ($custom_fields as $field) {
                 $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
             }
@@ -61,10 +69,10 @@ class Igor extends IgorAbstract
             clearstatcache();
             $post->last_modified = filemtime($index_path);
 
-            $images_path = base_path('resources/static/'.$type.'/'.$directory.'/images/');
+            $images_path = $path.'/images/';
             // if image is present or images folder has images
             if (isset($frontmatter['image']) || count($this->files->allFiles($images_path)) >= 1) {
-                $public_path = $this->handleImage($post->id, $type, $directory, $frontmatter['image']);
+                $public_path = $this->handleImage($post->id, $post_type, $post_directory, $frontmatter['image']);
                 $post->image = $public_path;
             }
             $post->save();

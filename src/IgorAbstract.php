@@ -48,7 +48,7 @@ abstract class IgorAbstract {
     public function regenerateStatic($id, $file, $config, $markdown)
     {
         // add post id to config
-        $config = $this->prependToFrontmatter($frontmatter, 'id', $id);
+        $config = $this->prependToFrontmatter($config, 'id', $id);
         $generator = new Generate($config, rtrim($markdown));
         file_put_contents($file, $generator->makeStatic());
     }

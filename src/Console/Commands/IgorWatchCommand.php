@@ -48,13 +48,11 @@ class IgorWatchCommand extends Command
         }
         $this->info("It's Alive!");
         $types = $this->files->directories($staticPath);
-        foreach ($types as $type) {
-            $type = basename($type);
-            $model = ucfirst(str_singular($type));
+        foreach ($types as $type_path) {
+            $type = basename($type_path);
             $posts = $this->files->directories($staticPath.'/'.$type);
             foreach ($posts as $post) {
-                $directory = basename($post);
-                $this->igor->reAnimate($model, $type, $directory, $post);
+                $this->igor->reAnimate($post);
             }
         }
     }
