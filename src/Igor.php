@@ -69,11 +69,13 @@ class Igor extends IgorAbstract
             }
             $post->save();
 
+            // save categories
             if (isset($frontmatter['categories'])) {
                 $categories_ids = $this->createOrFindCategories($frontmatter['categories']);
                 $post->categories()->sync($categories_ids);
             }
 
+            // save tags
             if (isset($frontmatter['tags'])) {
                 $tag_ids = $this->createOrFindTags($frontmatter['tags']);
                 $post->tags()->sync($tag_ids);
