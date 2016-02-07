@@ -71,7 +71,7 @@ class Igor extends IgorAbstract
 
             $images_path = $path.'/images/';
             // if image is present or images folder has images
-            if (isset($frontmatter['image']) || count($this->files->allFiles($images_path)) >= 1) {
+            if (isset($frontmatter['image']) && $this->files->exists($images_path.'/'.$frontmatter['image'])) {
                 $public_path = $this->handleImage($post_type, $post_directory, $frontmatter['image']);
                 $post->image = $public_path;
             }
