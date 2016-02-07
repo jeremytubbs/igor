@@ -104,11 +104,12 @@ abstract class IgorAbstract {
 
     public function handleImage($type, $directory, $image)
     {
+        $config = $this->getConfig($type);
         // set static path for image
         $frontmatter_img = base_path("resources/static/$type/$directory/images/$image");
         // set public path for image
         $filepath = "$type/$directory/$image";
-        $command = new ResizeImage($frontmatter_img, $filepath);
+        $command = new ResizeImage($frontmatter_img, $filepath, $config);
         $this->dispatch($command);
 
         return $image;
