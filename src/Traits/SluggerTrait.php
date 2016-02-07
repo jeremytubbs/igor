@@ -8,7 +8,7 @@ trait SluggerTrait {
     {
         $slug = str_slug($title);
         $i = 1;
-        if ($this->attributes['slug'] = '' || $this->attributes['slug'] != $slug) {
+        if (! isset($this->attributes['slug']) || $this->attributes['slug'] = '' || $this->attributes['slug'] != $slug) {
             $slugs = $this->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->lists('slug');
             if (count($slugs) < 1) $this->attributes['slug'] = $slug;
 
