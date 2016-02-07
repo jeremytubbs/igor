@@ -15,13 +15,5 @@ return [
     // custom route for a custom post type
     'type_routes' => [
         // 'ModelName' => 'route-name',
-    ],
-
-    // choose between gd and imagick
-    'image_driver' => 'imagick',
-
-    'image_2x' => true,
-
-    // choose between jpg, png
-    'image_format' => 'png',
+    ]
 ];
