@@ -61,7 +61,7 @@ class Igor extends IgorAbstract
 
             // add the slug to frontmatter
             if (! isset($frontmatter['slug']) || $frontmatter['slug'] != $post->slug) {
-                $frontmatter = ['slug' => $post->slug] + $frontmatter;
+                $frontmatter = $this->prependToFrontmatter($frontmatter, 'slug', $post->slug);
             }
 
             // regenerate and save static file with id and published_at
