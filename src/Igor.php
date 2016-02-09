@@ -20,7 +20,6 @@ class Igor extends IgorAbstract
         $discharger = $this->setDischarger($index_path);
         // get output from discharger
         $frontmatter = $discharger->getFrontmatter();
-        $content = $discharger->getContent();
         $markdown = $discharger->getMarkdown();
 
         // get config from staic directories
@@ -28,8 +27,7 @@ class Igor extends IgorAbstract
 
         // check if published_at is part of frontmatter if published is true
         if (! isset($frontmatter['published_at']) && $frontmatter['published']) {
-            $published_at = ['published_at' => date('Y-m-d H:i:s')];
-            $frontmatter = $published_at + $frontmatter;
+            $frontmatter = $this->prependToFrontmatter($frontmatter, 'published_at', date('Y-m-d H:i:s'));
         }
 
         // get last modified unixtime from file
@@ -37,55 +35,27 @@ class Igor extends IgorAbstract
         // check if database id has been added to frontmatter output
         $id = isset($frontmatter['id']) ? $frontmatter['id'] : null;
         // get post or create post
-        $post = \App::make('\\App\\'.$post_model)->firstOrNew(['id' => $id]);
+        $post = $this->igor->createOrFindPost($post_model, $id);
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
-            $post->user_id = isset($frontmatter['name']) ? User::whereName($frontmatter['name'])->firstOrFail()->pluck('id') : null;
-            $post->title = $frontmatter['title'];
-            $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
-            $post->content = $content;
-            $post->layout = isset($config['layout']) ? $config['layout'] : null;
-            $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
-            $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;
-            $post->published_at = isset($frontmatter['published_at']) ? $frontmatter['published_at'] : null;
-            $post->meta_title = isset($frontmatter['meta_title']) ? $frontmatter['meta_title'] : $frontmatter['title'];
-            $post->meta_description = isset($frontmatter['meta_description']) ? $frontmatter['meta_description'] : $this->getExcerpt($content, $config['excerpt_separator']);
-            $post->path = $path;
-
-            // get custom fields from config
-            $custom_fields = null !== config("custom_fields.$post_type") ? config("custom_fields.$post_type") : [];
-            foreach ($custom_fields as $field) {
-                $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
-            }
-            $post->save();
-
-            // add the slug to frontmatter
-            if (! isset($frontmatter['slug']) || $frontmatter['slug'] != $post->slug) {
-                $frontmatter = $this->prependToFrontmatter($frontmatter, 'slug', $post->slug);
-            }
-
-            // regenerate and save static file with id and published_at
-            $this->regenerateStatic($post->id, $index_path, $frontmatter, $markdown);
-            clearstatcache();
-            $post->last_modified = filemtime($index_path);
+            $this->igor->updatePost($post, $path);
+            $this->igor->updatePostCustomFields($post, $post_type);
 
             $images_path = $path.'/images/';
             // if image is present or images folder has images
-            if (isset($frontmatter['image']) && $this->files->exists($images_path.'/'.$frontmatter['image'])) {
+            if (isset($frontmatter['image']) && file_exists($images_path.'/'.$frontmatter['image'])) {
                 $public_path = $this->handleImage($post_type, $post_directory, $frontmatter['image']);
-                $post->image = $public_path;
             }
-            $post->save();
 
             // save categories
             if (isset($frontmatter['categories'])) {
-                $categories_ids = $this->createOrFindCategories($frontmatter['categories']);
+                $categories_ids = $this->igor->createOrFindCategories($frontmatter['categories']);
                 $post->categories()->sync($categories_ids);
             }
 
             // save tags
             if (isset($frontmatter['tags'])) {
-                $tag_ids = $this->createOrFindTags($frontmatter['tags']);
+                $tag_ids = $this->igor->createOrFindTags($frontmatter['tags']);
                 $post->tags()->sync($tag_ids);
             }
         }

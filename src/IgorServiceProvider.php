@@ -27,15 +27,7 @@ class IgorServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../static/' => base_path('resources/static'),
         ], 'static');
-    }
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
         $this->publishes([
             __DIR__.'/../config/igor.php' => config_path('igor.php'),
         ], 'config');
@@ -45,12 +37,22 @@ class IgorServiceProvider extends ServiceProvider
             __DIR__.'/stubs/Models/Category.php' => app_path('Category.php'),
             __DIR__.'/stubs/Models/Page.php' => app_path('Page.php'),
         ], 'models');
+    }
 
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
         $this->commands([
             'Jeremytubbs\Igor\Console\Commands\IgorWatchCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorBuildCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorNewCommand',
         ]);
-    }
 
+        $this->app->bind('Jeremytubbs\Igor\Contracts\IgorRepositoryInterface',
+            'Jeremytubbs\Igor\Repositories\IgorEloquentRepository');
+    }
 }

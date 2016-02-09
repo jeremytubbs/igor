@@ -15,5 +15,7 @@ return [
     // custom route for a custom post type
     'type_routes' => [
         // 'ModelName' => 'route-name',
-    ]
+    ],
+
+    'excerpt_separator' => '<!--more-->',
 ];
