@@ -16,11 +16,8 @@ class Igor extends IgorAbstract
         $post_directory = $path_parts['basename'];
         $index_path = $path.'/index.md';
 
-        // get file as instance of Jeremytubbs/VanDeGraaff/Discharge
         $discharger = $this->setDischarger($index_path);
-        // get output from discharger
         $frontmatter = $discharger->getFrontmatter();
-        $markdown = $discharger->getMarkdown();
 
         // get config from staic directories
         $config = $this->getConfig($post_type);
