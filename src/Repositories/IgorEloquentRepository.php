@@ -2,6 +2,7 @@
 
 namespace Jeremytubbs\Igor\Repositories;
 
+use App\User;
 use Jeremytubbs\Igor\Models\Tag;
 use Jeremytubbs\Igor\Models\Category;
 use Jeremytubbs\VanDeGraaff\Discharge;
@@ -16,9 +17,8 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return \App::make('\\App\\'.$model)->firstOrNew(['id' => $id]);
     }
 
-    public function updatePost($post, $path)
+    public function updatePost($post, $path, $discharger)
     {
-        $discharger = $this->setDischarger($path.'/index.md');
         $frontmatter = $discharger->getFrontmatter();
         $content = $discharger->getContent();
         $markdown = $discharger->getMarkdown();

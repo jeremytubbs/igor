@@ -2,25 +2,30 @@
 
 namespace Jeremytubbs\Igor;
 
-use Jeremytubbs\Igor\IgorAbstract;
 use App\User;
+use Jeremytubbs\Igor\IgorImage;
+use Jeremytubbs\VanDeGraaff\Discharge;
+use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
-class Igor extends IgorAbstract
+class Igor
 {
-    public function reAnimate($path)
+    use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
+
+    protected $path;
+
+    /**
+     * @param string $path
+     */
+    public function __construct($path, IgorRepository $igor)
     {
-        $path_parts = pathinfo($path);
+        $this->igor = $igor;
+        $this->setPaths($path);
+        $this->setDischarger($this->index_path);
+    }
 
-        $post_type = basename($path_parts['dirname']);
-        $post_model = ucfirst(str_singular($post_type));
-        $post_directory = $path_parts['basename'];
-        $index_path = $path.'/index.md';
-
-        $discharger = $this->setDischarger($index_path);
-        $frontmatter = $discharger->getFrontmatter();
-
-        // get config from staic directories
-        $config = $this->getConfig($post_type);
+    public function reAnimate()
+    {
+        $frontmatter = $this->discharger->getFrontmatter();
 
         // check if published_at is part of frontmatter if published is true
         if (! isset($frontmatter['published_at']) && $frontmatter['published']) {
@@ -28,20 +33,19 @@ class Igor extends IgorAbstract
         }
 
         // get last modified unixtime from file
-        $lastModified = filemtime($index_path);
+        $lastModified = filemtime($this->index_path);
         // check if database id has been added to frontmatter output
         $id = isset($frontmatter['id']) ? $frontmatter['id'] : null;
         // get post or create post
-        $post = $this->igor->createOrFindPost($post_model, $id);
+        $post = $this->igor->createOrFindPost($this->post_model, $id);
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
-            $this->igor->updatePost($post, $path);
-            $this->igor->updatePostCustomFields($post, $post_type);
+            $this->igor->updatePost($post, $this->path, $this->discharger);
+            $this->igor->updatePostCustomFields($post, $this->post_type);
 
-            $images_path = $path.'/images/';
             // if image is present or images folder has images
-            if (isset($frontmatter['image']) && file_exists($images_path.'/'.$frontmatter['image'])) {
-                $public_path = $this->handleImage($post_type, $post_directory, $frontmatter['image']);
+            if (isset($frontmatter['image']) && file_exists($this->images_path.'/'.$frontmatter['image'])) {
+                (new IgorImage)->handle($this->post_type, $this->post_directory, $frontmatter['image']);
             }
 
             // save categories
@@ -56,5 +60,21 @@ class Igor extends IgorAbstract
                 $post->tags()->sync($tag_ids);
             }
         }
+    }
+
+    public function setPaths($path)
+    {
+        $this->path = $path;
+        $path_parts = pathinfo($path);
+        $this->post_type = basename($path_parts['dirname']);
+        $this->post_model = ucfirst(str_singular($this->post_type));
+        $this->post_directory = $path_parts['basename'];
+        $this->index_path = $path.'/index.md';
+        $this->images_path = $path.'/images/';
+    }
+
+    public function setDischarger($file)
+    {
+        $this->discharger = new Discharge(file_get_contents($file));
     }
 }

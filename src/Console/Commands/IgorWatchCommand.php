@@ -6,6 +6,7 @@ use Exception;
 use Jeremytubbs\Igor\Igor;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
 class IgorWatchCommand extends Command
 {
@@ -28,9 +29,8 @@ class IgorWatchCommand extends Command
      *
      * @return void
      */
-    public function __construct(Igor $igor, Filesystem $files)
+    public function __construct(Filesystem $files)
     {
-        $this->igor = $igor;
         $this->files = $files;
         parent::__construct();
     }
@@ -52,7 +52,8 @@ class IgorWatchCommand extends Command
             $type = basename($type_path);
             $posts = $this->files->directories($staticPath.'/'.$type);
             foreach ($posts as $post) {
-                $this->igor->reAnimate($post);
+                $igor = new Igor($post, new IgorRepository);
+                $igor->reAnimate();
             }
         }
     }

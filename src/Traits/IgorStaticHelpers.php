@@ -2,17 +2,10 @@
 
 namespace Jeremytubbs\Igor\Traits;
 
-use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\VanDeGraaff\Generate;
 use Symfony\Component\Yaml\Parser;
 
 trait IgorStaticHelpers {
-
-    public function setDischarger($file)
-    {
-        $file = new Discharge(file_get_contents($file));
-        return $file;
-    }
 
     public function regenerateStatic($id, $file, $config, $markdown)
     {
