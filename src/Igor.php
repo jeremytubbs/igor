@@ -2,7 +2,6 @@
 
 namespace Jeremytubbs\Igor;
 
-use App\User;
 use Jeremytubbs\Igor\IgorImage;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
@@ -41,7 +40,7 @@ class Igor
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
             $this->igor->updatePost($post, $this->path, $this->discharger);
-            $this->igor->updatePostCustomFields($post, $this->post_type);
+            $this->igor->updatePostCustomFields($post, $this->post_type, $this->discharger);
 
             // if image is present or images folder has images
             if (isset($frontmatter['image']) && file_exists($this->images_path.'/'.$frontmatter['image'])) {

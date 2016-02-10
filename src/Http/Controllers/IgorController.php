@@ -5,16 +5,9 @@ namespace Jeremytubbs\Igor\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Jeremytubbs\Igor\Igor;
 
 class IgorController extends Controller
 {
-
-    public function __construct(Igor $igor)
-    {
-        $this->igor = $igor;
-    }
-
     /**
      * Display a listing of the resource.
      *

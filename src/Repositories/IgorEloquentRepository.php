@@ -39,6 +39,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         if (! isset($frontmatter['slug']) || $frontmatter['slug'] != $post->slug) {
             $frontmatter = $this->prependToFrontmatter($frontmatter, 'slug', $post->slug);
         }
+        $post->save();
 
         $this->regenerateStatic($post->id, $path.'/index.md', $frontmatter, $markdown);
         clearstatcache();
@@ -48,8 +49,9 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $post;
     }
 
-    public function updatePostCustomFields($post, $type)
+    public function updatePostCustomFields($post, $type, $discharger)
     {
+        $frontmatter = $discharger->getFrontmatter();
         $custom_fields = null !== config("igor.custom_fields.$type") ? config("igor.custom_fields.$type") : [];
         foreach ($custom_fields as $field) {
             $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
