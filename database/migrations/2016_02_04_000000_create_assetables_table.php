@@ -5,6 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateAssetablesTable extends Migration
 {
+    /**
      * Run the migrations.
      *
      * @return void
