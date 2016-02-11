@@ -4,12 +4,12 @@ namespace Jeremytubbs\Igor;
 
 use Jeremytubbs\LaravelResizer\Commands\ResizeImage;
 
-class IgorImage {
+class IgorAssets {
 
     use \Illuminate\Foundation\Bus\DispatchesJobs;
     use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
 
-    public function handle($type, $directory, $image)
+    public function handleResize($type, $directory, $image)
     {
         $config = $this->getConfig($type);
         // set static path for image

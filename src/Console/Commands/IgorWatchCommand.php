@@ -10,6 +10,8 @@ use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
 class IgorWatchCommand extends Command
 {
+    use \Jeremytubbs\Igor\Traits\IgorAssetHelpers;
+
     /**
      * The name and signature of the console command.
      *
@@ -47,11 +49,11 @@ class IgorWatchCommand extends Command
         if (! file_exists($staticPath)) {
             throw new Exception("No 'resources/static' folder.");
         }
+        $this->igor->createAssetTypes();
         $this->info("It's Alive!");
         $types = $this->files->directories($staticPath);
         foreach ($types as $type_path) {
             $type = basename($type_path);
-            $this->igor->createAssetTypes($type);
             $posts = $this->files->directories($staticPath.'/'.$type);
             foreach ($posts as $post) {
                 $igor = new Igor($post, new IgorRepository);

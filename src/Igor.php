@@ -2,7 +2,7 @@
 
 namespace Jeremytubbs\Igor;
 
-use Jeremytubbs\Igor\IgorImage;
+use Jeremytubbs\Igor\IgorAssets;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
@@ -44,7 +44,7 @@ class Igor
 
             // if image is present or images folder has images
             if (isset($frontmatter['image']) && file_exists($this->images_path.'/'.$frontmatter['image'])) {
-                (new IgorImage)->handle($this->post_type, $this->post_directory, $frontmatter['image']);
+                (new IgorAssets)->handleResize($this->post_type, $this->post_directory, $frontmatter['image']);
             }
 
             // save categories

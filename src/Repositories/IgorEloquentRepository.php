@@ -13,6 +13,7 @@ use Jeremytubbs\Igor\Contracts\IgorRepositoryInterface;
 class IgorEloquentRepository implements IgorRepositoryInterface
 {
     use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
+    use \Jeremytubbs\Igor\Traits\IgorAssetHelpers;
     use \Jeremytubbs\Resizer\ResizeHelpersTrait;
 
     public function createOrFindPost($model, $id)
@@ -95,10 +96,9 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         //
     }
 
-    public function createAssetTypes($type)
+    public function createAssetTypes()
     {
-        $config = $this->getConfig($type);
-        $imageSizes = $config['image_sizes'];
+        $imageSizes = $this->setAllAssetTypes();
 
         if (config('resizer.image_2x')) {
             $imageSizes = $this->setImageSizes($imageSizes, config('resizer.image_2x'));
