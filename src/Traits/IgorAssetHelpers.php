@@ -6,6 +6,8 @@ use Symfony\Component\Yaml\Parser;
 
 trait IgorAssetHelpers
 {
+    use \Jeremytubbs\Resizer\ResizeHelpersTrait;
+
     public function getResizerAssetTypes()
     {
         return null !== config('resizer.image_sizes') ? config('resizer.image_sizes') : null;
@@ -31,7 +33,7 @@ trait IgorAssetHelpers
     public function setAllAssetTypes()
     {
         $all_types = null;
-        if(config('igor.assets.resize')) {
+        if (config('igor.assets.resize')) {
             $all_types = $this->getResizerAssetTypes();
             $static_types = $this->getStaticAssetTypes();
             if ($static_types) {
@@ -48,6 +50,13 @@ trait IgorAssetHelpers
                 }
             }
         }
+        $all_types = $this->setImageSizes($all_types, config('resizer.image_2x'));
+
+        if (config('igor.assets.deepzoom')) {
+            $all_types['dzi'] = 'xml description for deepzoom';
+            $all_types['jsonp'] = 'jsonp description for deepzoom';
+        }
+
         return $all_types;
     }
 }
