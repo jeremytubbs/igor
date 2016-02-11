@@ -29,8 +29,9 @@ class IgorWatchCommand extends Command
      *
      * @return void
      */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, IgorRepository $igor)
     {
+        $this->igor = $igor;
         $this->files = $files;
         parent::__construct();
     }
@@ -50,6 +51,7 @@ class IgorWatchCommand extends Command
         $types = $this->files->directories($staticPath);
         foreach ($types as $type_path) {
             $type = basename($type_path);
+            $this->igor->createAssetTypes($type);
             $posts = $this->files->directories($staticPath.'/'.$type);
             foreach ($posts as $post) {
                 $igor = new Igor($post, new IgorRepository);

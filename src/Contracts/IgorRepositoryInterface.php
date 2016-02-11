@@ -8,5 +8,10 @@ interface IgorRepositoryInterface
     public function updatePost($post, $path, $discharger);
     public function updatePostCustomFields($post, $type, $discharger);
     public function createOrFindTags($tags);
+    public function updatePostTags($tags);
     public function createOrFindCategories($categories);
+    public function updatePostCategories($categories);
+    public function createAssetTypes($types);
+    public function createOrFindAssets($assets);
+    public function updatePostAssets($assets);
 }

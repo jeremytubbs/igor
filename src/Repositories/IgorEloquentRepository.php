@@ -3,18 +3,21 @@
 namespace Jeremytubbs\Igor\Repositories;
 
 use App\User;
-use Jeremytubbs\Igor\Models\Tag;
-use Jeremytubbs\Igor\Models\Category;
+use App\Tag;
+use App\Category;
+use App\Asset;
+use Jeremytubbs\Igor\Models\AssetType;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\Igor\Contracts\IgorRepositoryInterface;
 
 class IgorEloquentRepository implements IgorRepositoryInterface
 {
     use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
+    use \Jeremytubbs\Resizer\ResizeHelpersTrait;
 
     public function createOrFindPost($model, $id)
     {
-        return \App::make('\\App\\'.$model)->firstOrNew(['id' => $id]);
+        return \App::make('\\App\\'.$model)->firstOrCreate(['id' => $id]);
     }
 
     public function updatePost($post, $path, $discharger)
@@ -39,7 +42,6 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         if (! isset($frontmatter['slug']) || $frontmatter['slug'] != $post->slug) {
             $frontmatter = $this->prependToFrontmatter($frontmatter, 'slug', $post->slug);
         }
-        $post->save();
 
         $this->regenerateStatic($post->id, $path.'/index.md', $frontmatter, $markdown);
         clearstatcache();
@@ -71,6 +73,11 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $tag_ids;
     }
 
+    public function updatePostTags($tags)
+    {
+        //
+    }
+
     public function createOrFindCategories($categories)
     {
         $category_ids = null;
@@ -81,5 +88,41 @@ class IgorEloquentRepository implements IgorRepositoryInterface
             $category_ids[] = $category->id;
         }
         return $category_ids;
+    }
+
+    public function updatePostCategories($categories)
+    {
+        //
+    }
+
+    public function createAssetTypes($type)
+    {
+        $config = $this->getConfig($type);
+        $imageSizes = $config['image_sizes'];
+
+        if (config('resizer.image_2x')) {
+            $imageSizes = $this->setImageSizes($imageSizes, config('resizer.image_2x'));
+        }
+
+        foreach($imageSizes as $type => $description) {
+            if (is_array($description)) {
+                $height = $description[0];
+                $width = $description[1];
+                $description = $height . ' x ' . $width;
+            }
+            $asset_type = AssetType::firstOrNew(['name' => $type]);
+            $asset_type->description = $description;
+            $asset_type->save();
+        }
+    }
+
+    public function createOrFindAssets($assets)
+    {
+        //
+    }
+
+    public function updatePostAssets($assets)
+    {
+        //
     }
 }
