@@ -44,7 +44,7 @@ class Igor
 
             // if image is present or images folder has images
             if (isset($frontmatter['image']) && file_exists($this->images_path.'/'.$frontmatter['image'])) {
-                (new IgorAssets)->handleResize($this->post_type, $this->post_directory, $frontmatter['image']);
+                (new IgorAssets)->handleImage($this->post_type, $this->post_directory, $frontmatter['image']);
             }
             // save categories
             if (isset($frontmatter['categories'])) {
