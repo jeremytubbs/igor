@@ -59,6 +59,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
             $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
         }
         $post->save();
+        return $post;
     }
 
     public function createOrFindTags($tags)
@@ -73,9 +74,11 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $tag_ids;
     }
 
-    public function updatePostTags($tags)
+    public function updatePostTags($post, $tags)
     {
-        //
+        $tag_ids = $this->createOrFindTags($tags);
+        $post->tags()->sync($tag_ids);
+        return $post;
     }
 
     public function createOrFindCategories($categories)
@@ -90,9 +93,11 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $category_ids;
     }
 
-    public function updatePostCategories($categories)
+    public function updatePostCategories($post, $categories)
     {
-        //
+        $categories_ids = $this->createOrFindCategories($categories);
+        $post->categories()->sync($categories_ids);
+        return $post;
     }
 
     public function createAssetTypes()

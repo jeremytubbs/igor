@@ -39,24 +39,21 @@ class Igor
         $post = $this->igor->createOrFindPost($this->post_model, $id);
         // check if file has been modified since last save
         if ($post->last_modified != $lastModified) {
-            $this->igor->updatePost($post, $this->path, $this->discharger);
-            $this->igor->updatePostCustomFields($post, $this->post_type, $this->discharger);
+            $post = $this->igor->updatePost($post, $this->path, $this->discharger);
+            $post = $this->igor->updatePostCustomFields($post, $this->post_type, $this->discharger);
 
             // if image is present or images folder has images
             if (isset($frontmatter['image']) && file_exists($this->images_path.'/'.$frontmatter['image'])) {
                 (new IgorAssets)->handleResize($this->post_type, $this->post_directory, $frontmatter['image']);
             }
-
             // save categories
             if (isset($frontmatter['categories'])) {
-                $categories_ids = $this->igor->createOrFindCategories($frontmatter['categories']);
-                $post->categories()->sync($categories_ids);
+                $post = $this->igor->updatePostCategories($post, $frontmatter['categories']);
             }
 
             // save tags
             if (isset($frontmatter['tags'])) {
-                $tag_ids = $this->igor->createOrFindTags($frontmatter['tags']);
-                $post->tags()->sync($tag_ids);
+                $post = $this->igor->updatePostTags($post, $frontmatter['tags']);
             }
         }
     }

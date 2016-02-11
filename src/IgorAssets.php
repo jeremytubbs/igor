@@ -16,7 +16,7 @@ class IgorAssets {
         $frontmatter_img = base_path("resources/static/$type/$directory/images/$image");
         // set public path for image
         $filepath = "$type/$directory";
-        $command = new ResizeImage($frontmatter_img, $filepath, $config);
+        $command = new ResizeImage($frontmatter_img, $filepath, null, $config);
         $this->dispatch($command);
 
         return $image;
