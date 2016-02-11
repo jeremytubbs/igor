@@ -30,7 +30,7 @@ trait IgorAssetHelpers
         return isset($type_config['image_sizes']) ? $type_config['image_sizes'] : null;
     }
 
-    public function setAllAssetTypes()
+    public function getAllAssetTypes()
     {
         $all_types = null;
         if (config('igor.assets.resize')) {
@@ -45,7 +45,7 @@ trait IgorAssetHelpers
                 $post_types = $this->getPostTypeAssetTypes($type);
                 if ($post_types) {
                     foreach ($post_types as $key => $value) {
-                        $all_types["$type-$key"] = $value;
+                        $all_types[$key] = $value;
                     }
                 }
             }
@@ -59,4 +59,24 @@ trait IgorAssetHelpers
 
         return $all_types;
     }
+
+    public function getResizePostAssetTypeCascade($type)
+    {
+        $all_types = null;
+        $all_types = $this->getResizerAssetTypes();
+        $static_types = $this->getStaticAssetTypes();
+        if ($static_types) {
+            foreach ($static_types as $key => $value) {
+                $all_types[$key] = $value;
+            }
+        }
+        $post_types = $this->getPostTypeAssetTypes($type);
+        if ($post_types) {
+            foreach ($post_types as $key => $value) {
+                $all_types[$key] = $value;
+            }
+        }
+        return $all_types;
+    }
+
 }

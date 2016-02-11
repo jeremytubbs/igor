@@ -103,16 +103,10 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     public function createAssetTypes()
     {
         // in asset helpers trait
-        $imageSizes = $this->setAllAssetTypes();
+        $imageSizes = $this->getAllAssetTypes();
 
         foreach($imageSizes as $type => $description) {
-            if (is_array($description)) {
-                $height = $description[0];
-                $width = $description[1];
-                $description = $height . ' x ' . $width;
-            }
             $asset_type = AssetType::firstOrNew(['name' => $type]);
-            $asset_type->description = $description;
             $asset_type->save();
         }
     }

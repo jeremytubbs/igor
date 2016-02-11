@@ -8,17 +8,17 @@ use Jeremytubbs\LaravelDeepzoom\Commands\MakeTiles;
 class IgorAssets {
 
     use \Illuminate\Foundation\Bus\DispatchesJobs;
-    use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
+    use \Jeremytubbs\Igor\Traits\IgorAssetHelpers;
 
     public function handleImage($type, $directory, $image)
     {
-        $config = $this->getConfig($type);
         // set static path for image
         $frontmatter_img = base_path("resources/static/$type/$directory/images/$image");
         // set public path for image
         $filepath = "$type/$directory";
 
         if (config('igor.assets.resize')) {
+            $config = ['image_sizes' => $this->getResizePostAssetTypeCascade($type)];
             $command = new ResizeImage($frontmatter_img, $filepath, null, $config);
             $this->dispatch($command);
         }
