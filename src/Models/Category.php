@@ -15,12 +15,4 @@ class Category extends Model
     {
         return $this->morphedByMany('App\Post', 'categorable');
     }
-
-    /**
-     * Get all of the projects that are assigned this tag.
-     */
-    public function projects()
-    {
-        return $this->morphedByMany('App\Project', 'categorable');
-    }
 }
