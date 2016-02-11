@@ -17,5 +17,11 @@ return [
         // 'ModelName' => 'route-name',
     ],
 
+    'assets' => [
+        'deepzoom' => false,
+        'resize'   => false,
+        'gallery'  => false
+    ],
+
     'excerpt_separator' => '<!--more-->',
 ];
