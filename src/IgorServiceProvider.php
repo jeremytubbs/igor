@@ -3,6 +3,7 @@
 namespace Jeremytubbs\Igor;
 
 use Illuminate\Support\ServiceProvider;
+use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
 class IgorServiceProvider extends ServiceProvider
 {
@@ -13,6 +14,8 @@ class IgorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->setEventListeners();
+
         // Load routes
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/Http/routes.php';
@@ -55,5 +58,15 @@ class IgorServiceProvider extends ServiceProvider
 
         $this->app->bind('Jeremytubbs\Igor\Contracts\IgorRepositoryInterface',
             'Jeremytubbs\Igor\Repositories\IgorEloquentRepository');
+    }
+
+    public function setEventListeners()
+    {
+        \Event::listen('resizer', function($data) {
+            (new IgorRepository)->updatePostAssets($data);
+        });
+        \Event::listen('deepzoom', function($data) {
+            (new IgorRepository)->updatePostAssets($data);
+        });
     }
 }
