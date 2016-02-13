@@ -9,7 +9,7 @@ class Asset extends Model
     protected $guarded = ['id'];
 
     /**
-     * Get all of the posts that are assigned this tag.
+     * Get all of the posts that are assigned this asset.
      */
     public function posts()
     {
