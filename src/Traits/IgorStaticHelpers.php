@@ -3,6 +3,7 @@
 namespace Jeremytubbs\Igor\Traits;
 
 use Jeremytubbs\VanDeGraaff\Generate;
+use Jeremytubbs\VanDeGraaff\Discharge;
 use Symfony\Component\Yaml\Parser;
 
 trait IgorStaticHelpers {
@@ -66,5 +67,21 @@ trait IgorStaticHelpers {
     public function prependToFrontmatter($frontmatter, $key, $value)
     {
         return [$key => $value] + $frontmatter;
+    }
+
+    public function findPostId($post_path)
+    {
+        $path_parts = explode('/', $post_path);
+        $post_path = base_path("resources/static/$path_parts[0]/$path_parts[1]/index.md");
+        $discharger = new Discharge(file_get_contents($post_path));
+        $frontmatter = $discharger->getFrontmatter();
+
+        return $frontmatter['id'];
+    }
+
+    public function findPostModel($post_path)
+    {
+        $path_parts = explode('/', $post_path);
+        return ucfirst(str_singular($path_parts[0]));
     }
 }

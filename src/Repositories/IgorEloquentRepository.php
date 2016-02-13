@@ -111,13 +111,32 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         }
     }
 
+    public function findAssetTypeId($type)
+    {
+        $asset = AssetType::where('name', $type)->pluck('id');
+        return $asset[0];
+    }
+
     public function createOrFindAssets($assets)
     {
-        //
+        $asset_ids = null;
+        foreach($assets as $type => $uri) {
+            $asset_type_id = $this->findAssetTypeId($type);
+            $asset = Asset::firstOrNew(['uri' => $uri]);
+            $asset->asset_type_id = $asset_type_id;
+            $asset->save();
+            $asset_ids[] = $asset->id;
+        }
+        return $asset_ids;
     }
 
     public function updatePostAssets($assets)
     {
-        //
+        $asset_ids = $this->createOrFindAssets($assets);
+        $types = array_keys($assets);
+        $id = $this->findPostId($assets[$types[0]]);
+        $model = $this->findPostModel($assets[$types[0]]);
+        $post = $this->createOrFindPost($model, $id);
+        $post->assets()->sync($asset_ids);
     }
 }
