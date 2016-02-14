@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAssetsTable extends Migration
+class CreateAssetSourcesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,14 @@ class CreateAssetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('assets', function (Blueprint $table) {
+        Schema::create('asset_sources', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('asset_type_id')->unsigned();
-            $table->integer('asset_source_id')->unsigned();
+            $table->integer('sequence')->default(0);
             $table->string('uri')->unique();
+            $table->string('title')->nullable();
+            $table->string('alt')->nullable();
+            $table->string('caption')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateAssetsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('assets');
+        Schema::drop('asset_sources');
     }
 }
