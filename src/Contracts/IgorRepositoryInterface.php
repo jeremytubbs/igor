@@ -12,6 +12,7 @@ interface IgorRepositoryInterface
     public function createOrFindCategories($categories);
     public function updatePostCategories($post, $categories);
     public function createAssetTypes();
-    public function createOrFindAssets($assets);
-    public function updatePostAssets($assets);
+    public function findAssetTypeId($type);
+    public function createOrFindAssets($assets, $event);
+    public function updatePostAssets($data);
 }

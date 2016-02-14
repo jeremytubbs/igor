@@ -117,12 +117,12 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $asset[0];
     }
 
-    public function createOrFindAssets($assets)
+    public function createOrFindAssets($assets, $event)
     {
         $asset_ids = null;
         foreach($assets as $type => $uri) {
             $asset_type_id = $this->findAssetTypeId($type);
-            $asset = Asset::firstOrNew(['uri' => $uri]);
+            $asset = Asset::firstOrNew(['uri' => config("$event.destination_path").'/'.$uri]);
             $asset->asset_type_id = $asset_type_id;
             $asset->save();
             $asset_ids[] = $asset->id;
@@ -130,9 +130,12 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $asset_ids;
     }
 
-    public function updatePostAssets($assets)
+    public function updatePostAssets($data)
     {
-        $asset_ids = $this->createOrFindAssets($assets);
+        $source = $data['source'];
+        $assets = $data['output'];
+        $event = $data['event'];
+        $asset_ids = $this->createOrFindAssets($assets, $event);
         $types = array_keys($assets);
         $id = $this->findPostId($assets[$types[0]]);
         $model = $this->findPostModel($assets[$types[0]]);
