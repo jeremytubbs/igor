@@ -19,8 +19,7 @@ return [
 
     'assets' => [
         'deepzoom' => false,
-        'resize'   => false,
-        'gallery'  => false
+        'resize'   => false
     ],
 
     'excerpt_separator' => '<!--more-->',

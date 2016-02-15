@@ -84,4 +84,9 @@ trait IgorStaticHelpers {
         $path_parts = explode('/', $post_path);
         return ucfirst(str_singular($path_parts[0]));
     }
+
+    public function getAssetSources($image_path)
+    {
+        return \File::allFiles($image_path);
+    }
 }

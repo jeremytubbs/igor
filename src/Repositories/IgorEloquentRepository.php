@@ -7,6 +7,7 @@ use App\Tag;
 use App\Category;
 use App\Asset;
 use Jeremytubbs\Igor\Models\AssetType;
+use Jeremytubbs\Igor\Models\AssetSource;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\Igor\Contracts\IgorRepositoryInterface;
 
@@ -30,6 +31,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         $post->title = $frontmatter['title'];
         $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
         $post->content = $content;
+        // TODO: Remove image from post?
         $post->image = isset($frontmatter['image']) ? $frontmatter['image'] : null;
         $post->layout = isset($frontmatter['layout']) ? $frontmatter['layout'] : null;
         $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
@@ -111,6 +113,27 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         }
     }
 
+    public function createOrUpdateAssetSources($assets)
+    {
+        foreach ($assets as $asset) {
+            $last_modified = filemtime($asset);
+            $asset_source = AssetSource::firstOrNew(['uri' => $asset]);
+            $asset_source->last_modified = $last_modified;
+            $asset_source->save();
+        }
+    }
+
+    public function findAssetSource($uri)
+    {
+        $source = AssetSource::where('uri', '=', $uri)->first();
+        return $source ? $source : null;
+    }
+
+    public function deleteAssetSources($source)
+    {
+        //
+    }
+
     public function findAssetTypeId($type)
     {
         $asset = AssetType::where('name', $type)->pluck('id');
@@ -122,6 +145,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         $asset_ids = null;
         foreach($assets as $type => $uri) {
             $asset_type_id = $this->findAssetTypeId($type);
+            // TODO: need to return full path from reziser and deepzoom
             $asset = Asset::firstOrNew(['uri' => config("$event.destination_path").'/'.$uri]);
             $asset->asset_type_id = $asset_type_id;
             $asset->save();

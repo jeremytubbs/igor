@@ -54,10 +54,11 @@ class IgorWatchCommand extends Command
         $types = $this->files->directories($staticPath);
         foreach ($types as $type_path) {
             $type = basename($type_path);
-            $posts = $this->files->directories($staticPath.'/'.$type);
+            $posts = $this->files->directories("$staticPath/$type");
             foreach ($posts as $post) {
                 $igor = new Igor($post, new IgorRepository);
                 $igor->reAnimate();
+                $igor->reAnimateAssets();
             }
         }
     }

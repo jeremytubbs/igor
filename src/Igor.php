@@ -20,42 +20,47 @@ class Igor
         $this->igor = $igor;
         $this->setPaths($path);
         $this->setDischarger($this->index_path);
+        $this->setFrontmatter();
+        $this->setId();
+        $this->setPost();
+        $this->updateId();
     }
 
     public function reAnimate()
     {
-        $frontmatter = $this->discharger->getFrontmatter();
-
         // check if published_at is part of frontmatter if published is true
-        if (! isset($frontmatter['published_at']) && $frontmatter['published']) {
-            $frontmatter = $this->prependToFrontmatter($frontmatter, 'published_at', date('Y-m-d H:i:s'));
+        if (! isset($this->frontmatter['published_at']) && $this->frontmatter['published']) {
+            $this->frontmatter = $this->prependToFrontmatter($this->frontmatter, 'published_at', date('Y-m-d H:i:s'));
         }
 
         // get last modified unixtime from file
         $lastModified = filemtime($this->index_path);
-        // check if database id has been added to frontmatter output
-        $id = isset($frontmatter['id']) ? $frontmatter['id'] : null;
-        // get post or create post
-        $post = $this->igor->createOrFindPost($this->post_model, $id);
+
         // check if file has been modified since last save
-        if ($post->last_modified != $lastModified) {
-            $post = $this->igor->updatePost($post, $this->path, $this->discharger);
-            $post = $this->igor->updatePostCustomFields($post, $this->post_type, $this->discharger);
+        if ($this->post->last_modified != $lastModified) {
+            $this->igor->updatePost($this->post, $this->path, $this->discharger);
+            $this->igor->updatePostCustomFields($this->post, $this->post_type, $this->discharger);
 
             // if image is present or images folder has images
-            if (isset($frontmatter['image']) && file_exists($this->images_path.'/'.$frontmatter['image'])) {
-                (new IgorAssets)->handleImage($this->post_type, $this->post_directory, $frontmatter['image']);
+            if (isset($this->frontmatter['image']) && file_exists($this->images_path.'/'.$this->frontmatter['image'])) {
+                (new IgorAssets($this->igor))->handleImage($this->post_type, $this->post_directory, $this->frontmatter['image']);
             }
             // save categories
-            if (isset($frontmatter['categories'])) {
-                $post = $this->igor->updatePostCategories($post, $frontmatter['categories']);
+            if (isset($this->frontmatter['categories'])) {
+                $this->igor->updatePostCategories($this->post, $this->frontmatter['categories']);
             }
 
             // save tags
-            if (isset($frontmatter['tags'])) {
-                $post = $this->igor->updatePostTags($post, $frontmatter['tags']);
+            if (isset($this->frontmatter['tags'])) {
+                $this->igor->updatePostTags($this->post, $this->frontmatter['tags']);
             }
         }
+    }
+
+    public function reAnimateAssets() {
+        $assets = $this->getAssetSources($this->images_path);
+        $this->igor->createOrUpdateAssetSources($assets);
+        // TODO: handle assets
     }
 
     public function setPaths($path)
@@ -66,11 +71,31 @@ class Igor
         $this->post_model = ucfirst(str_singular($this->post_type));
         $this->post_directory = $path_parts['basename'];
         $this->index_path = $path.'/index.md';
-        $this->images_path = $path.'/images/';
+        $this->images_path = $path.'/images';
     }
 
     public function setDischarger($file)
     {
         $this->discharger = new Discharge(file_get_contents($file));
+    }
+
+    public function setFrontmatter()
+    {
+        $this->frontmatter = $this->discharger->getFrontmatter();
+    }
+
+    public function setId()
+    {
+        $this->id = isset($this->frontmatter['id']) ? $this->frontmatter['id'] : null;
+    }
+
+    public function setPost()
+    {
+        $this->post = $this->igor->createOrFindPost($this->post_model, $this->id);
+    }
+
+    public function updateId()
+    {
+        $this->id = $this->post->id;
     }
 }
