@@ -20,6 +20,7 @@ class CreateAssetSourcesTable extends Migration
             $table->string('alt')->nullable();
             $table->string('caption')->nullable();
             $table->string('description')->nullable();
+            $table->integer('last_modified');
             $table->timestamps();
         });
     }
