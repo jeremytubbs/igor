@@ -140,13 +140,12 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $asset[0];
     }
 
-    public function createOrFindAssets($assets, $event)
+    public function createOrFindAssets($assets)
     {
         $asset_ids = null;
         foreach($assets as $type => $uri) {
             $asset_type_id = $this->findAssetTypeId($type);
-            // TODO: need to return full path from reziser and deepzoom
-            $asset = Asset::firstOrNew(['uri' => config("$event.destination_path").'/'.$uri]);
+            $asset = Asset::firstOrNew(['uri' => $uri]);
             $asset->asset_type_id = $asset_type_id;
             $asset->save();
             $asset_ids[] = $asset->id;
@@ -158,8 +157,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     {
         $source = $data['source'];
         $assets = $data['output'];
-        $event = $data['event'];
-        $asset_ids = $this->createOrFindAssets($assets, $event);
+        $asset_ids = $this->createOrFindAssets($assets);
         $types = array_keys($assets);
         $id = $this->findPostId($assets[$types[0]]);
         $model = $this->findPostModel($assets[$types[0]]);

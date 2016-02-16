@@ -72,7 +72,9 @@ trait IgorStaticHelpers {
     public function findPostId($post_path)
     {
         $path_parts = explode('/', $post_path);
-        $post_path = base_path("resources/static/$path_parts[0]/$path_parts[1]/index.md");
+        $post_type = array_slice($path_parts, -3, 1);
+        $post_folder = array_slice($path_parts, -2, 1);
+        $post_path = base_path("resources/static/$post_type[0]/$post_folder[0]/index.md");
         $discharger = new Discharge(file_get_contents($post_path));
         $frontmatter = $discharger->getFrontmatter();
 
@@ -82,7 +84,8 @@ trait IgorStaticHelpers {
     public function findPostModel($post_path)
     {
         $path_parts = explode('/', $post_path);
-        return ucfirst(str_singular($path_parts[0]));
+        $post_type = array_slice($path_parts, -3, 1);
+        return ucfirst(str_singular($post_type[0]));
     }
 
     public function getAssetSources($image_path)
