@@ -31,8 +31,6 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         $post->title = $frontmatter['title'];
         $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
         $post->content = $content;
-        // TODO: Remove image from post?
-        $post->image = isset($frontmatter['image']) ? $frontmatter['image'] : null;
         $post->layout = isset($frontmatter['layout']) ? $frontmatter['layout'] : null;
         $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
         $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;
@@ -113,14 +111,29 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         }
     }
 
-    public function createOrUpdateAssetSources($assets)
+    public function createOrUpdateAssetSources($assets, $frontmatter)
     {
         foreach ($assets as $asset) {
-            $last_modified = filemtime($asset);
+            $filename = basename($asset);
+            if ($frontmatter) {
+                $sequence = array_search($filename, array_keys($frontmatter));
+            }
             $asset_source = AssetSource::firstOrNew(['uri' => $asset]);
-            $asset_source->last_modified = $last_modified;
+            $asset_source->sequence = isset($sequence) ? $sequence : 0;
+            $asset_source->title = isset($frontmatter[$filename]['title']) ? $frontmatter[$filename]['title'] : null;
+            $asset_source->alt = isset($frontmatter[$filename]['alt']) ? $frontmatter[$filename]['alt'] : null;
+            $asset_source->caption = isset($frontmatter[$filename]['caption']) ? $frontmatter[$filename]['caption'] : null;
+            $asset_source->description = isset($frontmatter[$filename]['desc']) ? $frontmatter[$filename]['desc'] : null;
             $asset_source->save();
         }
+    }
+
+    public function setAssetSourceLastModified($asset)
+    {
+        $last_modified = filemtime($asset);
+        $asset_source = AssetSource::firstOrNew(['uri' => $asset]);
+        $asset_source->last_modified = $last_modified;
+        $asset_source->save();
     }
 
     public function findAssetSource($uri)

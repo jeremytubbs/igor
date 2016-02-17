@@ -20,30 +20,31 @@ class IgorAssets {
         $this->igor = $igor;
     }
 
-    public function handleImage($type, $directory, $image)
+    public function handleImage($asset_path)
     {
-        //static path for image
-        $frontmatter_img = base_path("resources/static/$type/$directory/images/$image");
         clearstatcache();
-        $lastModified = filemtime($frontmatter_img);
-        $source = $this->igor->findAssetSource($frontmatter_img);
+        $lastModified = filemtime($asset_path);
+        $source = $this->igor->findAssetSource($asset_path);
 
-        if (!$source || ($source->last_modified != $lastModified)) {
+        if ($source->last_modified != $lastModified) {
             // set public path for image
-            $filepath = "$type/$directory";
+            $path_parts = explode('/', $source->uri);
+            $type = array_slice($path_parts, -4, 1);
+            $directory = array_slice($path_parts, -3, 1);
+            $filepath = "$type[0]/$directory[0]";
 
             if (config('igor.assets.resize')) {
-                $config = ['image_sizes' => $this->getResizePostAssetTypeCascade($type)];
-                $command = new ResizeImage($frontmatter_img, $filepath, null, $config);
+                $config = ['image_sizes' => $this->getResizePostAssetTypeCascade($type[0])];
+                $command = new ResizeImage($source->uri, $filepath, null, $config);
                 $this->dispatch($command);
             }
 
             if (config('igor.assets.deepzoom')) {
-                $command = new MakeTiles($frontmatter_img, null, $filepath);
+                $command = new MakeTiles($source->uri, null, $filepath);
                 $this->dispatch($command);
             }
         }
 
-        return $image;
+        return $asset_path;
     }
 }

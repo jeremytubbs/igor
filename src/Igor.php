@@ -28,6 +28,7 @@ class Igor
 
     public function reAnimate()
     {
+        //ar_dump($this->frontmatter);
         // check if published_at is part of frontmatter if published is true
         if (! isset($this->frontmatter['published_at']) && $this->frontmatter['published']) {
             $this->frontmatter = $this->prependToFrontmatter($this->frontmatter, 'published_at', date('Y-m-d H:i:s'));
@@ -41,10 +42,6 @@ class Igor
             $this->igor->updatePost($this->post, $this->path, $this->discharger);
             $this->igor->updatePostCustomFields($this->post, $this->post_type, $this->discharger);
 
-            // if image is present or images folder has images
-            if (isset($this->frontmatter['image']) && file_exists($this->images_path.'/'.$this->frontmatter['image'])) {
-                (new IgorAssets($this->igor))->handleImage($this->post_type, $this->post_directory, $this->frontmatter['image']);
-            }
             // save categories
             if (isset($this->frontmatter['categories'])) {
                 $this->igor->updatePostCategories($this->post, $this->frontmatter['categories']);
@@ -59,8 +56,12 @@ class Igor
 
     public function reAnimateAssets() {
         $assets = $this->getAssetSources($this->images_path);
-        $this->igor->createOrUpdateAssetSources($assets);
-        // TODO: handle assets
+        $assets_frontmattter = isset($this->frontmatter['assets']) ? $this->frontmatter['assets'] : null;
+        $this->igor->createOrUpdateAssetSources($assets, $assets_frontmattter);
+        foreach ($assets as $asset) {
+            (new IgorAssets($this->igor))->handleImage($asset);
+            $this->igor->setAssetSourceLastModified($asset);
+        }
     }
 
     public function setPaths($path)

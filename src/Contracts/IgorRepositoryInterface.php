@@ -12,7 +12,8 @@ interface IgorRepositoryInterface
     public function createOrFindCategories($categories);
     public function updatePostCategories($post, $categories);
     public function createAssetTypes();
-    public function createOrUpdateAssetSources($assets);
+    public function createOrUpdateAssetSources($assets, $frontmatter);
+    public function setAssetSourceLastModified($asset);
     public function findAssetSource($uri);
     public function deleteAssetSources($source);
     public function findAssetTypeId($type);
