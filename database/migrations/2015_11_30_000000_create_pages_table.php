@@ -20,7 +20,6 @@ class CreatePagesTable extends Migration
             $table->string('config')->nullable();
             $table->mediumText('content')->nullable();
             $table->string('layout')->nullable();
-            $table->string('image')->nullable();
             $table->boolean('featured')->default(0);
             $table->boolean('published')->default(0);
             $table->timestamp('published_at')->nullable();
