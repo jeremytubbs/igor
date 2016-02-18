@@ -18,10 +18,11 @@ class IgorController extends Controller
         $type = array_search($request->segment(1), config("igor.type_routes"));
         $model = "App\\" . $type;
         $posts = \App::make($model)
-            ->with('tags', 'categories')
+            ->with('tags', 'categories', 'assets')
             ->where('published', '=', true)
             ->get();
-        return view('posts.index', compact('posts'));
+        return json_encode($posts);
+        return view('igor::posts.index', compact('posts'));
     }
 
     /**
@@ -35,10 +36,10 @@ class IgorController extends Controller
         $type = array_search($request->segment(1), config("igor.type_routes"));
         $model = "App\\" . $type;
         $post = \App::make($model)->where('slug', '=', $slug)
-            ->with('tags', 'categories')
-            ->where('published', '=', true)
+            ->with('tags', 'categories', 'assets')
+            ->where('published', '=', 1)
             ->firstOrFail();
-        return view('posts.show', compact('post'));
+        return view('igor::posts.show', compact('post'));
     }
 
     /**
@@ -52,6 +53,6 @@ class IgorController extends Controller
         $page = \App::make("App\\Page")->where('slug', '=', $slug)
             ->where('published', '=', true)
             ->firstOrFail();
-        return view('pages.show', compact('page'));
+        return view('igor::pages.show', compact('page'));
     }
 }

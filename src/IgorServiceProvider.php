@@ -41,6 +41,8 @@ class IgorServiceProvider extends ServiceProvider
             __DIR__.'/stubs/Models/Category.php' => app_path('Category.php'),
             __DIR__.'/stubs/Models/Page.php' => app_path('Page.php'),
         ], 'models');
+
+        $this->loadViewsFrom(__DIR__.'/views', 'igor');
     }
 
     /**
