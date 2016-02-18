@@ -16,14 +16,14 @@ class Asset extends Model
         return $this->morphedByMany('App\Post', 'assetable');
     }
 
-    // public function source()
-    // {
-    //     return $this->hasOne('Jeremytubbs\Igor\Models\Source', 'id', 'source_id');
-    // }
-
     public function type()
     {
         return $this->belongsTo('Jeremytubbs\Igor\Models\AssetType', 'asset_type_id');
+    }
+
+    public function source()
+    {
+        return $this->belongsTo('Jeremytubbs\Igor\Models\AssetSource', 'asset_source_id');
     }
 
 }

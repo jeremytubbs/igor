@@ -153,13 +153,15 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $asset[0];
     }
 
-    public function createOrFindAssets($assets)
+    public function createOrFindAssets($assets, $source)
     {
         $asset_ids = null;
         foreach($assets as $type => $uri) {
             $asset_type_id = $this->findAssetTypeId($type);
+            $asset_source = $this->findAssetSource($source);
             $asset = Asset::firstOrNew(['uri' => $uri]);
             $asset->asset_type_id = $asset_type_id;
+            $asset->asset_source_id = $asset_source->id;
             $asset->save();
             $asset_ids[] = $asset->id;
         }
@@ -168,13 +170,14 @@ class IgorEloquentRepository implements IgorRepositoryInterface
 
     public function updatePostAssets($data)
     {
-        $source = $data['source'];
+        // TODO: figure out why I am getting double slash
+        $source = preg_replace('#/+#','/',$data['source']);
         $assets = $data['output'];
-        $asset_ids = $this->createOrFindAssets($assets);
+        $asset_ids = $this->createOrFindAssets($assets, $source);
         $types = array_keys($assets);
         $id = $this->findPostId($assets[$types[0]]);
         $model = $this->findPostModel($assets[$types[0]]);
         $post = $this->createOrFindPost($model, $id);
-        $post->assets()->sync($asset_ids);
+        $post->assets()->attach($asset_ids);
     }
 }
