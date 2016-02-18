@@ -14,9 +14,11 @@ interface IgorRepositoryInterface
     public function createAssetTypes();
     public function createOrUpdateAssetSources($assets, $frontmatter);
     public function setAssetSourceLastModified($asset);
+    public function removeAssetSourceLastModified($asset);
     public function findAssetSource($uri);
-    public function deleteAssetSources($source);
+    public function deleteAssetSource($model, $id, $uri);
     public function findAssetTypeId($type);
     public function createOrFindAssets($assets, $source);
     public function updatePostAssets($data);
+    public function getPostDatabaseAssetSources($model, $id, $assets);
 }

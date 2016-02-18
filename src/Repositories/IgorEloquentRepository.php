@@ -136,15 +136,34 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         $asset_source->save();
     }
 
+    public function removeAssetSourceLastModified($asset)
+    {
+        $asset_source = AssetSource::firstOrNew(['uri' => $asset]);
+        $asset_source->last_modified = 0;
+        $asset_source->save();
+    }
+
     public function findAssetSource($uri)
     {
         $source = AssetSource::where('uri', '=', $uri)->first();
         return $source ? $source : null;
     }
 
-    public function deleteAssetSources($source)
+    public function deleteAssetSource($model, $id, $uri)
     {
-        //
+        $source = $this->findAssetSource($uri);
+        $assets = Asset::where('asset_source_id', '=', $source->id)->get();
+        $post = $this->createOrFindPost($model, $id);
+        foreach ($assets as $asset) {
+            $post->assets()->detach($asset->id);
+            if (\File::isDirectory($asset->uri)) {
+                \File::deleteDirectory($asset->uri);
+            } else {
+                \File::delete($asset->uri);
+            }
+            Asset::where('id', '=', $asset->id)->delete();
+            $this->removeAssetSourceLastModified($uri);
+        }
     }
 
     public function findAssetTypeId($type)
@@ -170,14 +189,32 @@ class IgorEloquentRepository implements IgorRepositoryInterface
 
     public function updatePostAssets($data)
     {
-        // TODO: figure out why I am getting double slash
+        // TODO: why I am getting double slash from deepzoom
         $source = preg_replace('#/+#','/',$data['source']);
         $assets = $data['output'];
         $asset_ids = $this->createOrFindAssets($assets, $source);
         $types = array_keys($assets);
-        $id = $this->findPostId($assets[$types[0]]);
-        $model = $this->findPostModel($assets[$types[0]]);
+        $id = $this->findPostId($source);
+        $model = $this->findPostModel($source);
         $post = $this->createOrFindPost($model, $id);
         $post->assets()->attach($asset_ids);
+    }
+
+    public function getPostDatabaseAssetSources($model, $id, $assets)
+    {
+        $assets_database = null;
+        // get assets in database
+        $post = \App::make('\\App\\'.$model)
+                ->with('assets', 'assets.source')
+                ->where('id', '=', $id)
+                ->first();
+        foreach ($post->assets as $asset) {
+            $assets_database[] = $asset->source->uri;
+        }
+        if (is_array($assets_database)) {
+            $assets_database = array_unique($assets_database);
+        }
+
+        return $assets_database;
     }
 }

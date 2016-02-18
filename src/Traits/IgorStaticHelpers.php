@@ -72,24 +72,24 @@ trait IgorStaticHelpers {
     public function findPostId($post_path)
     {
         $path_parts = explode('/', $post_path);
-        $post_type = array_slice($path_parts, -3, 1);
-        $post_folder = array_slice($path_parts, -2, 1);
+        $post_type = array_slice($path_parts, -4, 1);
+        $post_folder = array_slice($path_parts, -3, 1);
         $post_path = base_path("resources/static/$post_type[0]/$post_folder[0]/index.md");
         $discharger = new Discharge(file_get_contents($post_path));
         $frontmatter = $discharger->getFrontmatter();
-
         return $frontmatter['id'];
     }
 
     public function findPostModel($post_path)
     {
         $path_parts = explode('/', $post_path);
-        $post_type = array_slice($path_parts, -3, 1);
+        $post_type = array_slice($path_parts, -4, 1);
         return ucfirst(str_singular($post_type[0]));
     }
 
     public function getAssetSources($image_path)
     {
-        return \File::allFiles($image_path);
+        $files = \File::allFiles($image_path);
+        return count($files) > 0 ? $files : null;
     }
 }

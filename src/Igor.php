@@ -55,12 +55,24 @@ class Igor
     }
 
     public function reAnimateAssets() {
-        $assets = $this->getAssetSources($this->images_path);
-        $assets_frontmattter = isset($this->frontmatter['assets']) ? $this->frontmatter['assets'] : null;
-        $this->igor->createOrUpdateAssetSources($assets, $assets_frontmattter);
-        foreach ($assets as $asset) {
-            (new IgorAssets($this->igor))->handleImage($asset);
-            $this->igor->setAssetSourceLastModified($asset);
+        $assets_files = $this->getAssetSources($this->images_path);
+        $assets_frontmatter = isset($this->frontmatter['assets']) ? $this->frontmatter['assets'] : [];
+        $assets_database = $this->igor->getPostDatabaseAssetSources($this->post_model, $this->id, $assets_files);
+        if ($assets_files !== null) {
+            $this->igor->createOrUpdateAssetSources($assets_files, $assets_frontmatter);
+            foreach ($assets_files as $asset_file) {
+                if (in_array(basename($asset_file), array_keys($assets_frontmatter))) {
+                    (new IgorAssets($this->igor))->handleImage($asset_file);
+                    $this->igor->setAssetSourceLastModified($asset_file);
+                }
+            }
+        }
+        if ($assets_database !== null) {
+            foreach ($assets_database as $asset_database) {
+                if (! in_array(basename($asset_database), array_keys($assets_frontmatter))) {
+                    $this->igor->deleteAssetSource($this->post_model, $this->id, $asset_database);
+                }
+            }
         }
     }
 

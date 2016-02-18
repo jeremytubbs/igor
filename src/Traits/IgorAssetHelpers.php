@@ -55,6 +55,7 @@ trait IgorAssetHelpers
         if (config('igor.assets.deepzoom')) {
             $all_types['dzi'] = 'xml description for deepzoom';
             $all_types['jsonp'] = 'jsonp description for deepzoom';
+            $all_types['_files'] = 'directory to hold files for deepzoom';
         }
 
         return $all_types;
