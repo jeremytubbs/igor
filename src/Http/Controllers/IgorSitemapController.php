@@ -2,6 +2,7 @@
 
 namespace Jeremytubbs\Igor\Http\Controllers;
 
+use App\Page;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -25,6 +26,26 @@ class IgorSitemapController extends Controller
 
         // check if there is cached sitemap and build new only if is not
         if (!$sitemap->isCached()) {
+
+            $pages = Page::with('assets', 'assets.source', 'assets.type')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            foreach ($pages as $page) {
+                if($page->published == 1) {
+                    $images = [];
+                    foreach ($page->assets as $asset) {
+                        if ($asset->type->name == 'preview') {
+                            $images[] = [
+                                'url' => $asset->uri,
+                                'title' => $asset->source->title,
+                                'caption' => $asset->source->caption
+                            ];
+                        }
+                    }
+                    $sitemap->add(\URL::to($page->slug), $page->updated_at, '0.5', 'monthly', $images);
+                }
+            }
+
             foreach (config('igor.type_routes') as $type => $route) {
                 $model = "App\\" . $type;
                 // get all posts from db, with image relations
@@ -47,7 +68,6 @@ class IgorSitemapController extends Controller
                                 ];
                             }
                         }
-
                         $sitemap->add(\URL::to($route.'/'.$post->slug), $post->updated_at, '0.8', 'weekly', $images);
                     }
                 }
