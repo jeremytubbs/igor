@@ -8,7 +8,7 @@ if (config('igor.use_routes') == true) {
         }
     }
     if (config('igor.use_sitemap') == true) {
-        require __DIR__.'/sitemapRoutes.php';
+        Route::get('sitemap', 'Jeremytubbs\Igor\Http\Controllers\IgorSitemapController@showSitemap');
     }
-    Route::get('{slug}',  'Jeremytubbs\Igor\Http\Controllers\IgorController@showPage');
+    Route::get('{slug}', 'Jeremytubbs\Igor\Http\Controllers\IgorController@showPage');
 }
