@@ -11,6 +11,8 @@ return [
 
     // use the package routes
     'use_routes' => true,
+    // use the sitemap route
+    'use_sitemap' => true,
 
     // custom route for a custom post type
     'type_routes' => [
