@@ -18,7 +18,7 @@ class IgorController extends Controller
         $type = array_search($request->segment(1), config("igor.type_routes"));
         $model = "App\\" . $type;
         $posts = \App::make($model)
-            ->with('tags', 'categories', 'assets')
+            ->with('tags', 'categories', 'assets', 'assets.source')
             ->where('published', '=', true)
             ->get();
         return json_encode($posts);
@@ -36,7 +36,7 @@ class IgorController extends Controller
         $type = array_search($request->segment(1), config("igor.type_routes"));
         $model = "App\\" . $type;
         $post = \App::make($model)->where('slug', '=', $slug)
-            ->with('tags', 'categories', 'assets')
+            ->with('tags', 'categories', 'assets', 'assets.source')
             ->where('published', '=', 1)
             ->firstOrFail();
         return view('igor::posts.show', compact('post'));
