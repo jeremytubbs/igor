@@ -60,6 +60,10 @@ class IgorServiceProvider extends ServiceProvider
 
         $this->app->bind('Jeremytubbs\Igor\Contracts\IgorRepositoryInterface',
             'Jeremytubbs\Igor\Repositories\IgorEloquentRepository');
+
+        $this->app->register('Jeremytubbs\LaravelResizer\ResizerServiceProvider');
+        $this->app->register('Jeremytubbs\LaravelDeepzoom\DeepzoomServiceProvider');
+        $this->app->register('Roumen\Sitemap\SitemapServiceProvider');
     }
 
     public function setEventListeners()

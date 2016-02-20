@@ -14,7 +14,8 @@
         "jeremytubbs/van-de-graaff": "^0.4",
         "jeremytubbs/laravel-resizer": "^0.1",
         "jeremytubbs/laravel-deepzoom": "^0.2",
-        "symfony/yaml": "^3.0"
+        "symfony/yaml": "^3.0",
+        "roumen/sitemap": "^2.6"
     },
     "autoload": {
         "psr-4": {
