@@ -15,11 +15,14 @@ class CreateAssetSourcesTable extends Migration
         Schema::create('asset_sources', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('sequence')->default(0);
+            $table->string('mimetype');
             $table->string('uri')->unique();
             $table->string('title')->nullable();
             $table->string('alt')->nullable();
             $table->string('caption')->nullable();
             $table->string('description')->nullable();
+            $table->string('geo_location')->nullable();
+            $table->string('licence')->nullable();
             $table->integer('last_modified');
             $table->timestamps();
         });
