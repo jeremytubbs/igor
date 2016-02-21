@@ -41,4 +41,12 @@ class Post extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    /**
+     * Publish content.
+     */
+    public function publish()
+    {
+        return $this->morphMany('Jeremytubbs\Igor\Models\Content', 'publishable');
+    }
 }
