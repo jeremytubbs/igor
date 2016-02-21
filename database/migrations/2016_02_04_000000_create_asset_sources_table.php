@@ -21,7 +21,7 @@ class CreateAssetSourcesTable extends Migration
             $table->string('alt')->nullable();
             $table->string('caption')->nullable();
             $table->string('description')->nullable();
-            $table->string('geo_location')->nullable();
+            $table->string('geolocation')->nullable();
             $table->string('licence')->nullable();
             $table->integer('last_modified');
             $table->timestamps();
