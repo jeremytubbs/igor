@@ -73,7 +73,6 @@ resources/
 
 
 Todo Core:
-- Asset handling
-- RSS feed / Sitemap
+- Asset workflow for non-images
 - API
 - more documentation!
