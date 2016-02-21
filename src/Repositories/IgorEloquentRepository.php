@@ -179,9 +179,10 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     {
         $asset_ids = null;
         foreach($assets as $type => $uri) {
+            $asset_path = str_replace(public_path(), '', $uri);
             $asset_type_id = $this->findAssetTypeId($type);
             $asset_source = $this->findAssetSource($source);
-            $asset = Asset::firstOrNew(['uri' => $uri]);
+            $asset = Asset::firstOrNew(['uri' => $asset_path]);
             $asset->asset_type_id = $asset_type_id;
             $asset->asset_source_id = $asset_source->id;
             $asset->save();
