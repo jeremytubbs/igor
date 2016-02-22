@@ -8,6 +8,8 @@ class Column extends Model
 {
     protected $guarded = ['id'];
 
+    protected $dates = ['timestamp'];
+
     public function contents()
     {
         return $this->belongsToMany('Jeremytubbs\Igor\Models\Content');
