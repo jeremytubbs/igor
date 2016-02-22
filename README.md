@@ -38,7 +38,7 @@ php artisan vendor:publish
 ```sh
 php artisan igor:build project
 ```
-This command will create `app\Project.php` model, a projects migration, and a `resources\static\projects` directory. You will need to run `php artisan migrate` before you can publish any project posts.
+This command will create a `resources\static\projects` directory. You will need to add `projects` to `app\config\igor.php` before you can publish any projects.
 
 **Create a new post for a custom type:**
 ```sh
@@ -73,6 +73,7 @@ resources/
 
 
 Todo Core:
+- Cleanup naming after switch to Content Types from Posts
 - Asset workflow for non-images
 - API
 - more documentation!
