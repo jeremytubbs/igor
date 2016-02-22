@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContentType extends Model
 {
+    use \Jeremytubbs\Igor\Traits\SluggerTrait;
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public function contents()

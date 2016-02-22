@@ -1,5 +1,6 @@
 name: 'John Doe'
 types:
+  - pages
 # Override resizer.php image_sizes here
 # image_sizes:
 #     thumb: [100, 200]

@@ -50,12 +50,12 @@ class IgorWatchCommand extends Command
             throw new Exception("No 'resources/static' folder.");
         }
         $this->igor->createAssetTypes();
+        $this->igor->createContentTypes();
+        $this->igor->createCustomColumnTypes();
         $this->info("It's Alive!");
         $types = $this->files->directories($staticPath);
         foreach ($types as $type_path) {
             $type = basename($type_path);
-            //$this->igor->createContentType($type);
-            //$this->igor->createCustomColumnTypes($type);
             $contents = $this->files->directories("$staticPath/$type");
             foreach ($contents as $post) {
                 $igor = new Igor($post, new IgorRepository);

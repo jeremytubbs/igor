@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ColumnType extends Model
 {
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public function columns()

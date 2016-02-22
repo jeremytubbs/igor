@@ -2,11 +2,14 @@
 
 return [
     // your custom content types
-    'types' => ['pages'],
+    'types' => ['projects'],
 
     // custom columns for your content types
     'custom_columns' => [
-        //'projects' => ['started_at', 'completed_at'],
+        // 'projects' => [
+        //     'started_at' => 'timestamp',
+        //     'completed_at' => 'timestamp'
+        // ],
     ],
 
     // use the package routes
