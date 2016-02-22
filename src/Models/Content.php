@@ -11,7 +11,7 @@ class Content extends Model
     protected $dates = ['published_at'];
 
     /**
-     * Get all of the tags for the post.
+     * Get all of the tags.
      */
     public function tags()
     {
@@ -19,11 +19,27 @@ class Content extends Model
     }
 
     /**
-     * Get all of the posts categories.
+     * Get all of the categories.
      */
     public function categories()
     {
         return $this->morphToMany('Jeremytubbs\Igor\Models\Category', 'categorable')->withTimestamps();
+    }
+
+    /**
+     * Get all custom columns.
+     */
+    public function columns()
+    {
+        return $this->belongsToMany('Jeremytubbs\Igor\Models\Column');
+    }
+
+    /**
+     * Get content type.
+     */
+    public function type()
+    {
+        return $this->belongsTo('Jeremytubbs\Igor\Model\ContentType', 'content_type_id');
     }
 
     /**

@@ -17,7 +17,6 @@ class CreateContentTypesTable extends Migration
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->timestamps();
         });
     }
 

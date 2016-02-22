@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContentType extends Model
 {
+    public $timestamps = false;
     protected $guarded = ['id'];
 
     public function contents()
