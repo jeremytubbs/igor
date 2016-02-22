@@ -14,7 +14,7 @@ class CreateColumnsTable extends Migration
     {
         Schema::create('columns', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('column_type_id')->unique()->unsigned();
+            $table->integer('column_type_id')->unsigned();
             $table->integer('integer')->nullable();
             $table->string('string')->nullable();
             $table->text('text')->nullable();
