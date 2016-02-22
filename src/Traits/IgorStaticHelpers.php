@@ -87,6 +87,13 @@ trait IgorStaticHelpers {
         return ucfirst(str_singular($post_type[0]));
     }
 
+    public function findContentTypeName($post_path)
+    {
+        $path_parts = explode('/', $post_path);
+        $post_type = array_slice($path_parts, -2, 1);
+        return $post_type[0];
+    }
+
     public function getAssetSources($image_path)
     {
         $files = \File::allFiles($image_path);

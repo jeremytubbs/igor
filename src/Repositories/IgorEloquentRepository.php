@@ -27,11 +27,13 @@ class IgorEloquentRepository implements IgorRepositoryInterface
 
     public function updatePost($post, $path, $discharger)
     {
+        $content_type_id = $this->findContentTypeId($this->findContentTypeName($path));
         $frontmatter = $discharger->getFrontmatter();
         $content = $discharger->getContent();
         $markdown = $discharger->getMarkdown();
 
         $post->user_id = isset($frontmatter['name']) ? User::whereName($frontmatter['name'])->firstOrFail()->pluck('id') : null;
+        $post->content_type_id = $content_type_id;
         $post->title = $frontmatter['title'];
         $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
         $post->body = $content;
@@ -122,6 +124,13 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         foreach($contentTypes as $type) {
             $content_type = ContentType::firstOrCreate(['name' => $type]);
         }
+    }
+
+    public function findContentTypeId($name)
+    {
+        $content_type = ContentType::where('name', '=', $name)->first();
+        var_dump($name);
+        return isset($content_type->id) ? $content_type->id : null;
     }
 
     public function createCustomColumnTypes()
