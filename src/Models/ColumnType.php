@@ -4,14 +4,14 @@ namespace Jeremytubbs\Igor\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AssetType extends Model
+class ColumnType extends Model
 {
     public $timestamps = false;
 
     protected $guarded = ['id'];
 
-    public function assets()
+    public function columns()
     {
-        return $this->hasMany('Jeremytubbs\Igor\Models\Asset');
+        return $this->hasMany('Jeremytubbs\Igor\Models\Column');
     }
 }

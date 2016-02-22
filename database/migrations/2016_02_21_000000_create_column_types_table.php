@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAssetTypesTable extends Migration
+class CreateColumnTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,10 @@ class CreateAssetTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('asset_types', function (Blueprint $table) {
+        Schema::create('column_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->text('description')->nullable();
+            $table->string('type');
         });
     }
 
@@ -26,6 +26,6 @@ class CreateAssetTypesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('asset_types');
+        Schema::drop('column_types');
     }
 }

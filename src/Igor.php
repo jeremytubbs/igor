@@ -28,7 +28,6 @@ class Igor
 
     public function reAnimate()
     {
-        //ar_dump($this->frontmatter);
         // check if published_at is part of frontmatter if published is true
         if (! isset($this->frontmatter['published_at']) && $this->frontmatter['published']) {
             $this->frontmatter = $this->prependToFrontmatter($this->frontmatter, 'published_at', date('Y-m-d H:i:s'));
@@ -40,6 +39,7 @@ class Igor
         // check if file has been modified since last save
         if ($this->post->last_modified != $lastModified) {
             $this->igor->updatePost($this->post, $this->path, $this->discharger);
+
             $this->igor->updatePostCustomFields($this->post, $this->post_type, $this->discharger);
 
             // save categories

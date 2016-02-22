@@ -47,49 +47,14 @@ class IgorBuildCommand extends Command
     public function handle()
     {
         $this->name = $this->argument('name');
-        $this->makeModel();
-        $this->makeMigration();
-        $this->files->makeDirectory(base_path('resources/static/'. $this->getMigrationName()));
+        $this->files->makeDirectory(base_path('resources/static/'. $this->getContentTypeName()));
         $this->updateStaticConfig();
         $this->makePostConfig();
     }
 
-    /**
-     * Generate the desired migration.
-     */
-    protected function makeMigration()
-    {
-        $path = $this->getMigrationPath($this->getMigrationName());
-
-        if ($this->files->exists($path)) {
-            return $this->error($this->name . ' already exists!');
-        }
-
-        $this->files->put($path, $this->compilePostMigrationStub());
-
-        $this->info('Migration created successfully.');
-        $this->composer->dumpAutoloads();
-    }
-
-    /**
-     * Generate an Eloquent model.
-     */
-    protected function makeModel()
-    {
-        $path = $this->getModelPath($this->getModelName());
-
-        if ($this->files->exists($path)) {
-            return $this->error($this->name . ' already exists!');
-        }
-
-        $this->files->put($path, $this->compilePostModelStub());
-
-        $this->info('Model created successfully.');
-    }
-
     protected function makePostConfig()
     {
-        $name = $this->getMigrationName();
+        $name = $this->getContentTypeName();
         $post_config_path = base_path("resources/static/$name/config.yaml");
         $this->files->put($post_config_path, '# Override main config.yaml here.');
 
@@ -100,48 +65,12 @@ class IgorBuildCommand extends Command
         $config_path = base_path('resources/static/config.yaml');
         $config = $this->files->get($config_path);
         $config = Yaml::parse($config);
-        $config['types'][] = $this->getMigrationName();
+        $config['types'][] = $this->getContentTypeName();
         $config = Yaml::dump($config, 2);
         $this->files->put($config_path, $config);
     }
 
-    protected function getMigrationPath($name)
-    {
-        return base_path() . '/database/migrations/' . date('Y_m_d_His') . '_create_' . $name . '_table.php';
-    }
-
-    protected function getModelPath($name)
-    {
-        $name = str_replace($this->getAppNamespace(), '', $name);
-        return $this->laravel['path'] . '/' . str_replace('\\', '/', $name) . '.php';
-    }
-
-    protected function compilePostMigrationStub()
-    {
-        $stub = $this->files->get(__DIR__ . '/../../stubs/postMigration.stub');
-        $className = ucwords(str_plural(camel_case($this->name)));
-        $tableName = $this->getMigrationName();
-        $stub = str_replace('{{class}}', $className, $stub);
-        $stub = str_replace('{{table}}', $tableName, $stub);
-        return $stub;
-    }
-
-    protected function compilePostModelStub()
-    {
-        $stub = $this->files->get(__DIR__ . '/../../stubs/postModel.stub');
-        $className = $this->getModelName();
-        $namespace = rtrim($this->getAppNamespace(), '\\');
-        $stub = str_replace('{{class}}', $className, $stub);
-        $stub = str_replace('{{namespace}}', $namespace, $stub);
-        return $stub;
-    }
-
-    protected function getModelName()
-    {
-        return ucwords(str_singular(camel_case($this->name)));
-    }
-
-    protected function getMigrationName()
+    protected function getContentTypeName()
     {
         return str_plural(snake_case($this->name));
     }

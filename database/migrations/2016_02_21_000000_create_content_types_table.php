@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateContentsTable extends Migration
+class CreateContentTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,10 @@ class CreateContentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contents', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->morphs('publishable');
-            $table->timestamps();
+        Schema::create('content_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
         });
     }
 
@@ -26,6 +26,6 @@ class CreateContentsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('contents');
+        Schema::drop('content_types');
     }
 }

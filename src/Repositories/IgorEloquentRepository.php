@@ -6,8 +6,12 @@ use App\User;
 use App\Tag;
 use App\Category;
 use App\Asset;
+use App\Content;
 use Jeremytubbs\Igor\Models\AssetType;
 use Jeremytubbs\Igor\Models\AssetSource;
+use Jeremytubbs\Igor\Models\ContentType;
+use Jeremytubbs\Igor\Models\Column;
+use Jeremytubbs\Igor\Models\ColumnType;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Jeremytubbs\Igor\Contracts\IgorRepositoryInterface;
 
@@ -18,19 +22,21 @@ class IgorEloquentRepository implements IgorRepositoryInterface
 
     public function createOrFindPost($model, $id)
     {
-        return \App::make('\\App\\'.$model)->firstOrCreate(['id' => $id]);
+        return Content::firstOrCreate(['id' => $id]);
     }
 
     public function updatePost($post, $path, $discharger)
     {
+        $content_type_id = $this->findContentTypeId($this->findContentTypeName($path));
         $frontmatter = $discharger->getFrontmatter();
         $content = $discharger->getContent();
         $markdown = $discharger->getMarkdown();
 
         $post->user_id = isset($frontmatter['name']) ? User::whereName($frontmatter['name'])->firstOrFail()->pluck('id') : null;
+        $post->content_type_id = $content_type_id;
         $post->title = $frontmatter['title'];
         $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
-        $post->content = $content;
+        $post->body = $content;
         $post->layout = isset($frontmatter['layout']) ? $frontmatter['layout'] : null;
         $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
         $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;
@@ -54,12 +60,19 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     public function updatePostCustomFields($post, $type, $discharger)
     {
         $frontmatter = $discharger->getFrontmatter();
-        $custom_fields = null !== config("igor.custom_fields.$type") ? config("igor.custom_fields.$type") : [];
-        foreach ($custom_fields as $field) {
-            $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
+        $custom_columns = (null !== config("igor.custom_columns.$type")) ? config("igor.custom_columns.$type") : [];
+        $custom_column_ids = null;
+        foreach($custom_columns as $name => $type) {
+            if (isset($frontmatter[$name])) {
+                $column_type = ColumnType::where('name', '=', $name)->first();
+                $column = Column::firstOrCreate([
+                    'column_type_id' => $column_type->id,
+                    $type => $frontmatter[$name],
+                ]);
+                $custom_column_ids[] = $column->id;
+            }
         }
-        $post->save();
-        return $post;
+        if ($custom_column_ids) $post->columns()->sync($custom_column_ids);
     }
 
     public function createOrFindTags($tags)
@@ -110,6 +123,38 @@ class IgorEloquentRepository implements IgorRepositoryInterface
             $asset_type->save();
         }
     }
+
+    public function createContentTypes()
+    {
+        $contentTypes = config('igor.types');
+
+        foreach($contentTypes as $type) {
+            $content_type = ContentType::firstOrCreate(['name' => $type]);
+        }
+    }
+
+    public function findContentTypeId($name)
+    {
+        $content_type = ContentType::where('name', '=', $name)->first();
+        var_dump($name);
+        return isset($content_type->id) ? $content_type->id : null;
+    }
+
+    public function createCustomColumnTypes()
+    {
+        $columnTypes = config('igor.custom_columns');
+        foreach($columnTypes as $contentType) {
+            var_dump($columnTypes);
+            foreach ($contentType as $name => $type) {
+                $column_type = ColumnType::firstOrCreate([
+                    'name' => $name,
+                    'type' => $type,
+                ]);
+            }
+        }
+    }
+
+    /* Begin Asset Repo Area */
 
     public function createOrUpdateAssetSources($assets, $frontmatter)
     {
@@ -208,8 +253,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     {
         $assets_database = null;
         // get assets in database
-        $post = \App::make('\\App\\'.$model)
-                ->with('assets', 'assets.source')
+        $post = Content::with('assets', 'assets.source')
                 ->where('id', '=', $id)
                 ->first();
         foreach ($post->assets as $asset) {
