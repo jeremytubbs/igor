@@ -2,13 +2,19 @@
 
 namespace Jeremytubbs\Igor\Http\Controllers;
 
-use App\Page;
+use App\Content;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
 class IgorSitemapController extends Controller
 {
+    public function __construct(IgorRepository $igor)
+    {
+        $this->igor = $igor;
+    }
+
     /**
      * Display roumen/sitemap
      *
@@ -27,7 +33,8 @@ class IgorSitemapController extends Controller
         // check if there is cached sitemap and build new only if is not
         if (!$sitemap->isCached()) {
 
-            $pages = Page::with('assets', 'assets.source', 'assets.type')
+            $pages = Content::with('assets', 'assets.source', 'assets.type')
+                ->where('content_type_id', '=', null)
                 ->orderBy('created_at', 'desc')
                 ->get();
             foreach ($pages as $page) {
@@ -47,9 +54,9 @@ class IgorSitemapController extends Controller
             }
 
             foreach (config('igor.type_routes') as $type => $route) {
-                $model = "App\\" . $type;
+                $content_type_id = $this->igor->findContentTypeId($type);
                 // get all posts from db, with image relations
-                 $posts = \App::make($model)
+                 $posts = Content::where('content_type_id', '=', $content_type_id)
                     ->with('assets', 'assets.source', 'assets.type')
                     ->orderBy('created_at', 'desc')
                     ->get();

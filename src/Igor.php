@@ -39,7 +39,6 @@ class Igor
         // check if file has been modified since last save
         if ($this->post->last_modified != $lastModified) {
             $this->igor->updatePost($this->post, $this->path, $this->discharger);
-
             $this->igor->updatePostCustomFields($this->post, $this->post_type, $this->discharger);
 
             // save categories
@@ -104,7 +103,7 @@ class Igor
 
     public function setPost()
     {
-        $this->post = $this->igor->createOrFindPost($this->post_model, $this->id);
+        $this->post = $this->igor->createOrFindContent($this->id);
     }
 
     public function updateId()

@@ -20,14 +20,15 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
     use \Jeremytubbs\Igor\Traits\IgorAssetHelpers;
 
-    public function createOrFindPost($model, $id)
+    public function createOrFindContent($id)
     {
         return Content::firstOrCreate(['id' => $id]);
     }
 
     public function updatePost($post, $path, $discharger)
     {
-        $content_type_id = $this->findContentTypeId($this->findContentTypeName($path));
+        $custom_type_name = $this->findContentTypeName($path);
+        $content_type_id = $this->findContentTypeId($custom_type_name);
         $frontmatter = $discharger->getFrontmatter();
         $content = $discharger->getContent();
         $markdown = $discharger->getMarkdown();
@@ -136,7 +137,6 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     public function findContentTypeId($name)
     {
         $content_type = ContentType::where('name', '=', $name)->first();
-        var_dump($name);
         return isset($content_type->id) ? $content_type->id : null;
     }
 
@@ -144,7 +144,6 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     {
         $columnTypes = config('igor.custom_columns');
         foreach($columnTypes as $contentType) {
-            var_dump($columnTypes);
             foreach ($contentType as $name => $type) {
                 $column_type = ColumnType::firstOrCreate([
                     'name' => $name,

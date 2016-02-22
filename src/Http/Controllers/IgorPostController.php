@@ -2,12 +2,20 @@
 
 namespace Jeremytubbs\Igor\Http\Controllers;
 
+use App\Content;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
-class IgorController extends Controller
+class IgorPostController extends Controller
 {
+
+    public function __construct(IgorRepository $igor)
+    {
+        $this->igor = $igor;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,9 +23,9 @@ class IgorController extends Controller
      */
     public function index(Request $request)
     {
-        $type = array_search($request->segment(1), config("igor.type_routes"));
-        $model = "App\\" . $type;
-        $posts = \App::make($model)
+        $custom_type_name = array_search($request->segment(1), config("igor.type_routes"));
+        $content_type_id = $this->igor->findContentTypeId($custom_type_name);
+        $posts = Content::where('content_type_id', '=', $content_type_id)
             ->with('tags', 'categories', 'assets', 'assets.source')
             ->where('published', '=', true)
             ->get();
@@ -32,9 +40,10 @@ class IgorController extends Controller
      */
     public function showPost(Request $request, $slug)
     {
-        $type = array_search($request->segment(1), config("igor.type_routes"));
-        $model = "App\\" . $type;
-        $post = \App::make($model)->where('slug', '=', $slug)
+        $custom_type_name = array_search($request->segment(1), config("igor.type_routes"));
+        $content_type_id = $this->igor->findContentTypeId($custom_type_name);
+        $post = Content::where('slug', '=', $slug)
+            ->where('content_type_id', '=', $content_type_id)
             ->with('tags', 'categories', 'assets', 'assets.source')
             ->where('published', '=', 1)
             ->firstOrFail();
