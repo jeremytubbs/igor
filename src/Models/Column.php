@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Column extends Model
 {
+    public $timestamps = false;
+
     protected $guarded = ['id'];
 
     protected $dates = ['timestamp'];

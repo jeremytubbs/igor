@@ -60,12 +60,19 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     public function updatePostCustomFields($post, $type, $discharger)
     {
         $frontmatter = $discharger->getFrontmatter();
-        $custom_fields = null !== config("igor.custom_fields.$type") ? config("igor.custom_fields.$type") : [];
-        foreach ($custom_fields as $field) {
-            $post->$field = isset($frontmatter[$field]) ? $frontmatter[$field] : null;
+        $custom_columns = (null !== config("igor.custom_columns.$type")) ? config("igor.custom_columns.$type") : [];
+        $custom_column_ids = null;
+        foreach($custom_columns as $name => $type) {
+            if (isset($frontmatter[$name])) {
+                $column_type = ColumnType::where('name', '=', $name)->first();
+                $column = Column::firstOrCreate([
+                    'column_type_id' => $column_type->id,
+                    $type => $frontmatter[$name],
+                ]);
+                $custom_column_ids[] = $column->id;
+            }
         }
-        $post->save();
-        return $post;
+        if ($custom_column_ids) $post->columns()->sync($custom_column_ids);
     }
 
     public function createOrFindTags($tags)

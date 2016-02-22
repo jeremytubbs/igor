@@ -40,7 +40,7 @@ class Igor
         if ($this->post->last_modified != $lastModified) {
             $this->igor->updatePost($this->post, $this->path, $this->discharger);
 
-            //$this->igor->updatePostCustomFields($this->post, $this->post_type, $this->discharger);
+            $this->igor->updatePostCustomFields($this->post, $this->post_type, $this->discharger);
 
             // save categories
             if (isset($this->frontmatter['categories'])) {
