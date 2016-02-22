@@ -1,11 +1,11 @@
 <?php
 
 return [
-    // your custom post types
-    'types' => [],
+    // your custom content types
+    'types' => ['pages'],
 
-    // custom fields for your post types
-    'custom_fields' => [
+    // custom columns for your content types
+    'custom_columns' => [
         //'projects' => ['started_at', 'completed_at'],
     ],
 
@@ -14,7 +14,7 @@ return [
     // use the sitemap route
     'use_sitemap' => true,
 
-    // custom route for a custom post type
+    // custom route for a custom content type
     'type_routes' => [
         // 'ModelName' => 'route-name',
     ],

@@ -11,8 +11,8 @@ class Tag extends Model
     /**
      * Get all of the posts that are assigned this tag.
      */
-    public function posts()
+    public function content()
     {
-        return $this->morphedByMany('App\Post', 'taggable');
+        return $this->morphedByMany('App\Content', 'taggable');
     }
 }
