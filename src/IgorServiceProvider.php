@@ -69,10 +69,10 @@ class IgorServiceProvider extends ServiceProvider
     public function setEventListeners()
     {
         \Event::listen('resizer', function($data) {
-            (new IgorRepository)->updatePostAssets($data);
+            (new IgorRepository)->updateContentAssets($data);
         });
         \Event::listen('deepzoom', function($data) {
-            (new IgorRepository)->updatePostAssets($data);
+            (new IgorRepository)->updateContentAssets($data);
         });
     }
 }

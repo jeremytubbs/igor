@@ -38,17 +38,17 @@ class Igor
 
         // check if file has been modified since last save
         if ($this->post->last_modified != $lastModified) {
-            $this->igor->updatePost($this->post, $this->path, $this->discharger);
-            $this->igor->updatePostCustomFields($this->post, $this->post_type, $this->discharger);
+            $this->igor->updateContent($this->post, $this->path, $this->discharger);
+            $this->igor->updateContentCustomColumns($this->post, $this->post_type, $this->discharger);
 
             // save categories
             if (isset($this->frontmatter['categories'])) {
-                $this->igor->updatePostCategories($this->post, $this->frontmatter['categories']);
+                $this->igor->updateContentCategories($this->post, $this->frontmatter['categories']);
             }
 
             // save tags
             if (isset($this->frontmatter['tags'])) {
-                $this->igor->updatePostTags($this->post, $this->frontmatter['tags']);
+                $this->igor->updateContentTags($this->post, $this->frontmatter['tags']);
             }
         }
     }
@@ -56,7 +56,7 @@ class Igor
     public function reAnimateAssets() {
         $assets_files = $this->getAssetSources($this->images_path);
         $assets_frontmatter = isset($this->frontmatter['assets']) ? $this->frontmatter['assets'] : [];
-        $assets_database = $this->igor->getPostDatabaseAssetSources($this->post_model, $this->id, $assets_files);
+        $assets_database = $this->igor->getContentDatabaseAssetSources($this->post_model, $this->id, $assets_files);
         if ($assets_files !== null) {
             $this->igor->createOrUpdateAssetSources($assets_files, $assets_frontmatter);
             foreach ($assets_files as $asset_file) {

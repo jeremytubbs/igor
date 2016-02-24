@@ -25,7 +25,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return Content::firstOrCreate(['id' => $id]);
     }
 
-    public function updatePost($post, $path, $discharger)
+    public function updateContent($post, $path, $discharger)
     {
         $custom_type_name = $this->findContentTypeName($path);
         $content_type_id = $this->findContentTypeId($custom_type_name);
@@ -58,7 +58,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $post;
     }
 
-    public function updatePostCustomFields($post, $type, $discharger)
+    public function updateContentCustomColumns($post, $type, $discharger)
     {
         $frontmatter = $discharger->getFrontmatter();
         $custom_columns = (null !== config("igor.custom_columns.$type")) ? config("igor.custom_columns.$type") : [];
@@ -88,7 +88,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $tag_ids;
     }
 
-    public function updatePostTags($post, $tags)
+    public function updateContentTags($post, $tags)
     {
         $tag_ids = $this->createOrFindTags($tags);
         $post->tags()->sync($tag_ids);
@@ -107,7 +107,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $category_ids;
     }
 
-    public function updatePostCategories($post, $categories)
+    public function updateContentCategories($post, $categories)
     {
         $categories_ids = $this->createOrFindCategories($categories);
         $post->categories()->sync($categories_ids);
@@ -200,7 +200,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
     {
         $source = $this->findAssetSource($uri);
         $assets = Asset::where('asset_source_id', '=', $source->id)->get();
-        $post = $this->createOrFindPost($model, $id);
+        $post = $this->createOrFindContent($id);
         foreach ($assets as $asset) {
             $post->assets()->detach($asset->id);
             if (\File::isDirectory($asset->uri)) {
@@ -235,7 +235,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         return $asset_ids;
     }
 
-    public function updatePostAssets($data)
+    public function updateContentAssets($data)
     {
         // TODO: why I am getting double slash from deepzoom
         $source = preg_replace('#/+#','/',$data['source']);
@@ -244,11 +244,11 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         $types = array_keys($assets);
         $id = $this->findPostId($source);
         $model = $this->findPostModel($source);
-        $post = $this->createOrFindPost($model, $id);
+        $post = $this->createOrFindContent($id);
         $post->assets()->attach($asset_ids);
     }
 
-    public function getPostDatabaseAssetSources($model, $id, $assets)
+    public function getContentDatabaseAssetSources($model, $id, $assets)
     {
         $assets_database = null;
         // get assets in database
