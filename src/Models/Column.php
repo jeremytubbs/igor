@@ -10,7 +10,7 @@ class Column extends Model
 
     protected $guarded = ['id'];
 
-    protected $dates = ['timestamp'];
+    //protected $dates = ['timestamp'];
 
     public function contents()
     {
