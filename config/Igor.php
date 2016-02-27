@@ -2,7 +2,7 @@
 
 return [
     // your custom content types
-    'types' => ['projects'],
+    'types' => [],
 
     // custom columns for your content types
     'custom_columns' => [
@@ -19,7 +19,7 @@ return [
 
     // custom route for a custom content type
     'type_routes' => [
-        // 'ModelName' => 'route-name',
+        // 'content-type' => 'route-name',
     ],
 
     'assets' => [

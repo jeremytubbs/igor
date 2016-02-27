@@ -32,7 +32,7 @@ trait IgorAssetHelpers
 
     public function getAllAssetTypes()
     {
-        $all_types = null;
+        $all_types = [];
         if (config('igor.assets.resize')) {
             $all_types = $this->getResizerAssetTypes();
             $static_types = $this->getStaticAssetTypes();
@@ -49,8 +49,8 @@ trait IgorAssetHelpers
                     }
                 }
             }
+            $all_types = $this->setImageSizes($all_types, config('resizer.image_2x'));
         }
-        $all_types = $this->setImageSizes($all_types, config('resizer.image_2x'));
 
         if (config('igor.assets.deepzoom')) {
             $all_types['dzi'] = 'xml description for deepzoom';

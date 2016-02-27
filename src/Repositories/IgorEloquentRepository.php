@@ -130,7 +130,11 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         $contentTypes = config('igor.types');
 
         foreach($contentTypes as $type) {
-            $content_type = ContentType::firstOrCreate(['name' => $type]);
+            $slug = str_slug($type);
+            $content_type = ContentType::firstOrCreate([
+                'name' => $type,
+                'slug' => $slug
+            ]);
         }
     }
 
