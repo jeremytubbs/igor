@@ -52,7 +52,7 @@ class IgorSitemapController extends Controller
                 }
             }
 
-            foreach (config('igor.type_routes') as $type => $route) {
+            foreach (config('igor.content_type_routes') as $type => $route) {
                 $content_type_id = $this->igor->findContentTypeId($type);
                 // get all posts from db, with image relations
                  $posts = Content::where('content_type_id', '=', $content_type_id)

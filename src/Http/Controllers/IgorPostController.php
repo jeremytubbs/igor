@@ -25,7 +25,7 @@ class IgorPostController extends Controller
      */
     public function index(Request $request)
     {
-        $custom_type_name = array_search($request->segment(1), config("igor.type_routes"));
+        $custom_type_name = array_search($request->segment(1), config("igor.content_type_routes"));
         $content_type_id = $this->igor->findContentTypeId($custom_type_name);
         $posts = Content::where('content_type_id', '=', $content_type_id)
             ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
@@ -43,7 +43,7 @@ class IgorPostController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $custom_type_name = array_search($request->segment(1), config("igor.type_routes"));
+        $custom_type_name = array_search($request->segment(1), config("igor.content_type_routes"));
         $content_type_id = $this->igor->findContentTypeId($custom_type_name);
         $post = Content::where('slug', '=', $slug)
             ->where('content_type_id', '=', $content_type_id)
