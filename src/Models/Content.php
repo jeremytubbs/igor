@@ -39,7 +39,7 @@ class Content extends Model
      */
     public function type()
     {
-        return $this->belongsTo('Jeremytubbs\Igor\Model\ContentType', 'content_type_id');
+        return $this->belongsTo('Jeremytubbs\Igor\Models\ContentType', 'content_type_id');
     }
 
     /**
