@@ -38,6 +38,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
         $post->title = $frontmatter['title'];
         $post->slug = isset($frontmatter['slug']) ? $frontmatter['slug'] : str_slug($frontmatter['title']);
         $post->body = $content;
+        $post->config = isset($frontmatter['config']) ? json_encode($frontmatter['config']) : null;
         $post->layout = isset($frontmatter['layout']) ? $frontmatter['layout'] : null;
         $post->featured = isset($frontmatter['featured']) ? $frontmatter['featured'] : false;
         $post->published = isset($frontmatter['published']) ? $frontmatter['published'] : false;

@@ -61,7 +61,7 @@ class Igor
             $this->igor->createOrUpdateAssetSources($assets_files, $assets_frontmatter);
             foreach ($assets_files as $asset_file) {
                 if (in_array(basename($asset_file), array_keys($assets_frontmatter))) {
-                    (new IgorAssets($this->igor))->handleImage($asset_file);
+                    (new IgorAssets($this->igor))->handleImage($asset_file, $this->frontmatter);
                     $this->igor->setAssetSourceLastModified($asset_file);
                 }
             }

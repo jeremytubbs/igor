@@ -30,6 +30,16 @@ trait IgorAssetHelpers
         return isset($type_config['image_sizes']) ? $type_config['image_sizes'] : null;
     }
 
+    public function getPostTypeAssetConfig($type)
+    {
+        $type_path = base_path('resources/static/'.$type.'/config.yaml');
+        if (file_exists($type_path)) {
+            $yaml = new Parser();
+            $type_config = $yaml->parse(file_get_contents($type_path));
+        }
+        return isset($type_config['assets']) ? $type_config['assets'] : null;
+    }
+
     public function getAllAssetTypes()
     {
         $all_types = [];
@@ -78,6 +88,23 @@ trait IgorAssetHelpers
             }
         }
         return $all_types;
+    }
+
+    public function getAssetActionConfigCascade($type, $content_config)
+    {
+        $all_config = config('igor.assets');
+        $type_config = $this->getPostTypeAssetConfig($type);
+        if ($type_config) {
+            foreach ($type_config as $key => $value) {
+                $all_config[$key] = $value;
+            }
+        }
+        if ($content_config) {
+            foreach ($content_config as $key => $value) {
+                $all_config[$key] = $value;
+            }
+        }
+        return $all_config;
     }
 
 }

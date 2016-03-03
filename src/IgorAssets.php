@@ -11,6 +11,7 @@ class IgorAssets {
 
     use \Illuminate\Foundation\Bus\DispatchesJobs;
     use \Jeremytubbs\Igor\Traits\IgorAssetHelpers;
+    use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
 
     /**
      * @param string $path
@@ -20,7 +21,7 @@ class IgorAssets {
         $this->igor = $igor;
     }
 
-    public function handleImage($asset_path)
+    public function handleImage($asset_path, $frontmatter)
     {
         clearstatcache();
         $lastModified = filemtime($asset_path);
@@ -32,14 +33,16 @@ class IgorAssets {
             $type = array_slice($path_parts, -4, 1);
             $directory = array_slice($path_parts, -3, 1);
             $filepath = "$type[0]/$directory[0]";
+            $frontmatter_assets = isset($frontmatter['config']['assets']) ? $frontmatter['config']['assets'] : null;
+            $asset_config = $this->getAssetActionConfigCascade($type[0], $frontmatter_assets);
 
-            if (config('igor.assets.resize')) {
+            if ($asset_config['resize']) {
                 $config = ['image_sizes' => $this->getResizePostAssetTypeCascade($type[0])];
                 $command = new ResizeImage($source->uri, $filepath, null, $config);
                 $this->dispatch($command);
             }
 
-            if (config('igor.assets.deepzoom')) {
+            if ($asset_config['deepzoom']) {
                 $command = new MakeTiles($source->uri, null, $filepath);
                 $this->dispatch($command);
             }
