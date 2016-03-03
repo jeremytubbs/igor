@@ -8,6 +8,8 @@ class ContentTransformer
 {
     public function transform($content)
     {
+        $content->config = json_decode($content->config);
+
         $content->body = Blade::compileString($content->body);
 
         // transform custom columns
@@ -38,6 +40,30 @@ class ContentTransformer
         unset($content->assets);
         $content->assets = $asset_group;
 
+        //transform tags
+        $tag_group = null;
+        foreach ($content->tags as $tag) {
+            $tag_group[] = [
+                'id' => $tag->id,
+                'slug' => $tag->slug,
+                'name' => $tag->name
+            ];
+        }
+        unset($content->tags);
+        $content->tags = $tag_group;
+
+        //transform categories
+        $category_group = null;
+        foreach ($content->categories as $category) {
+            $category_group[] = [
+                'id' => $category->id,
+                'slug' => $category->slug,
+                'name' => $category->name
+            ];
+        }
+        unset($content->categories);
+        $content->categories = $category_group;
+
         return $content;
     }
 
@@ -48,8 +74,9 @@ class ContentTransformer
         foreach ($contents as $content) {
             $data[] = $this->transform($content);
         }
+        $contents->data = $data;
 
-        return $data;
+        return $contents;
     }
 
     public function item($content)
