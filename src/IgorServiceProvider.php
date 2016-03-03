@@ -43,6 +43,10 @@ class IgorServiceProvider extends ServiceProvider
         ], 'models');
 
         $this->loadViewsFrom(__DIR__.'/views', 'igor');
+
+        $this->publishes([
+            __DIR__.'/views' => base_path('resources/views/vendor/igor'),
+        ]);
     }
 
     /**
