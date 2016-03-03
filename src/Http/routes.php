@@ -7,6 +7,8 @@ if (config('igor.use_routes') == true) {
             Route::get($type.'/{slug}', 'Jeremytubbs\Igor\Http\Controllers\IgorPostController@showPost');
         }
     }
+    Route::get('categories', 'Jeremytubbs\Igor\Http\Controllers\IgorCategoryController@index');
+    Route::get('categories/{slug}', 'Jeremytubbs\Igor\Http\Controllers\IgorCategoryController@show');
 }
 
 if (config('igor.use_sitemap') == true) {

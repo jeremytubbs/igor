@@ -2,11 +2,14 @@
 
 namespace Jeremytubbs\Igor\Transformers;
 
-class ContentColumnTransformer
+use Blade;
+
+class ContentTransformer
 {
     public function transform($content)
     {
-        $columns = null;
+        $content->body = Blade::compileString($content->body);
+
         if (! empty($content->columns)) {
             $content_columns = $content->columns;
             foreach ($content_columns as $column) {

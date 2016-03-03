@@ -6,13 +6,13 @@ use App\Content;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Jeremytubbs\Igor\Transformers\ContentColumnTransformer as ColumnTransformer;
+use Jeremytubbs\Igor\Transformers\ContentTransformer;
 use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
 class IgorPostController extends Controller
 {
 
-    public function __construct(IgorRepository $igor, ColumnTransformer $transformer)
+    public function __construct(IgorRepository $igor, ContentTransformer $transformer)
     {
         $this->igor = $igor;
         $this->transformer = $transformer;
