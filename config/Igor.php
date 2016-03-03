@@ -13,14 +13,16 @@ return [
     ],
 
     // use the package routes
-    'use_routes' => true,
-    // use the sitemap route
-    'use_sitemap' => true,
-
+    'use_content_routes' => true,
     // custom route for a custom content type
-    'type_routes' => [
+    'content_type_routes' => [
         // 'content-type' => 'route-name',
     ],
+    'use_page_routes' => true,
+    'use_tag_routes' => true,
+    'use_category_routes' => true,
+    // use the sitemap route
+    'use_sitemap' => true,
 
     'assets' => [
         'deepzoom' => false,
