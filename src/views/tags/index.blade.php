@@ -1,5 +1,5 @@
 @extends('app')
 
 @section('content')
-	@include('igor::partials.categories')
+    @include('igor::partials.tags')
 @endsection

@@ -15,7 +15,7 @@ class IgorPageController extends Controller
      * @param  $slug
      * @return \Illuminate\Http\Response
      */
-    public function showPage($slug)
+    public function show($slug)
     {
         $page = Content::where('slug', '=', $slug)
             ->where('content_type_id', '=', null)

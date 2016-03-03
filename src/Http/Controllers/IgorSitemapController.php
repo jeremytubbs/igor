@@ -20,9 +20,8 @@ class IgorSitemapController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showSitemap()
+    public function show()
     {
-
         // create new sitemap object
         $sitemap = \App::make("sitemap");
 

@@ -41,7 +41,7 @@ class IgorPostController extends Controller
      * @param  $slug
      * @return \Illuminate\Http\Response
      */
-    public function showPost(Request $request, $slug)
+    public function show(Request $request, $slug)
     {
         $custom_type_name = array_search($request->segment(1), config("igor.type_routes"));
         $content_type_id = $this->igor->findContentTypeId($custom_type_name);

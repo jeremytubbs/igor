@@ -2,14 +2,14 @@
 
 namespace Jeremytubbs\Igor\Http\Controllers;
 
-use App\Category;
+use App\Tag;
 use App\Content;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Transformers\ContentTransformer;
 
-class IgorCategoryController extends Controller
+class IgorTagController extends Controller
 {
     protected $transformer;
 
@@ -25,8 +25,8 @@ class IgorCategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::get();
-        return view('igor::categories.index', compact('categories'));
+        $tags = Tag::get();
+        return view('igor::tags.index', compact('tags'));
     }
 
     /**
@@ -39,7 +39,7 @@ class IgorCategoryController extends Controller
     {
         $contents = Content::where('published', '=', true)
             ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
-            ->whereHas('categories', function ($query) use ($slug) {
+            ->whereHas('tags', function ($query) use ($slug) {
                 $query->where('slug', '=', $slug);
             })
             ->whereNotNull('content_type_id') // page content type is null
@@ -47,6 +47,6 @@ class IgorCategoryController extends Controller
 
         $contents = $this->transformer->collection($contents);
         if (! $contents) return abort(404);
-        return view('igor::categories.show', compact('contents'));
+        return view('igor::tags.show', compact('contents'));
     }
 }
