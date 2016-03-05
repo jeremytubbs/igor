@@ -8,6 +8,12 @@ class ContentTransformer
 {
     public function transform($content)
     {
+        $content_type = '';
+        if (isset($content->type)) {
+            $content_type = '/'.config("igor.content_type_routes")[$content->type->slug];
+        }
+        $content->url = config('app.url').$content_type.'/'.$content->slug;
+
         $content->config = json_decode($content->config);
 
         $content->body = Blade::compileString($content->body);
@@ -34,7 +40,7 @@ class ContentTransformer
                 ];
             }
             if (isset($asset_item_value->source->id)) {
-                $asset_group[$asset_item_value->source->id] = $asset_transform;
+                $asset_group[] = $asset_transform;
             }
         }
         unset($content->assets);
