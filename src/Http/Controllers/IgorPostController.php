@@ -28,7 +28,7 @@ class IgorPostController extends Controller
         $custom_type_name = array_search($request->segment(1), config("igor.content_type_routes"));
         $content_type_id = $this->igor->findContentTypeId($custom_type_name);
         $posts = Content::where('content_type_id', '=', $content_type_id)
-            ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
+            ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
             ->where('published', '=', true)
             ->get();
         $posts = $this->transformer->collection($posts);

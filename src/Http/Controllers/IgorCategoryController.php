@@ -41,7 +41,7 @@ class IgorCategoryController extends Controller
         $request->session()->put('category', $slug);
 
         $contents = Content::where('published', '=', true)
-            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
+            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
             ->whereHas('categories', function ($query) use ($slug) {
                 $query->where('slug', '=', $slug);
             })
