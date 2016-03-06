@@ -35,8 +35,11 @@ class IgorCategoryController extends Controller
      * @param  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
+        // push category into session
+        $request->session()->put('category', $slug);
+
         $contents = Content::where('published', '=', true)
             ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
             ->whereHas('categories', function ($query) use ($slug) {
