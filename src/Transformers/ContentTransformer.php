@@ -40,7 +40,12 @@ class ContentTransformer
                 ];
             }
             if (isset($asset_item_value->source->id)) {
-                $asset_group[$asset_item_value->source->sequence] = [
+                // hack used to just add items in squence without defining them on the content
+                $sequence = $asset_item_value->source->sequence;
+                if ($sequence == 1 && $asset_group != null) {
+                    $sequence = count($asset_group) + 1;
+                }
+                $asset_group[$sequence] = [
                     'title' => $asset_item_value->source->title,
                     'alt' => $asset_item_value->source->alt,
                     'caption' => $asset_item_value->source->caption,

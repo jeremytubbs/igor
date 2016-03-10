@@ -14,7 +14,7 @@ class AddApiTokenToUsersTable extends Migration
     {
         if (!(Schema::hasColumn('users', 'api_token'))) {
             Schema::table('users', function (Blueprint $table) {
-                $table->string('api_token')->default(null);
+                $table->string('api_token', 60)->unique()->nullable();
             });
         }
     }
