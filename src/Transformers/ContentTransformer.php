@@ -33,14 +33,23 @@ class ContentTransformer
         $asset_group = null;
         $content_assets = $content->assets->groupBy('asset_source_id');
         foreach ($content_assets as $asset_group_key => $asset_group_value) {
-            $asset_transform = null;
+            $asset_files = null;
             foreach ($asset_group_value as $asset_item_value) {
-                $asset_transform[$asset_item_value->type->name] = [
+                $asset_files[$asset_item_value->type->name] = [
                     'uri' => config('app.url') . $asset_item_value->uri,
                 ];
             }
             if (isset($asset_item_value->source->id)) {
-                $asset_group[] = $asset_transform;
+                $asset_group[$asset_item_value->source->sequence] = [
+                    'title' => $asset_item_value->source->title,
+                    'alt' => $asset_item_value->source->alt,
+                    'caption' => $asset_item_value->source->caption,
+                    'description' => $asset_item_value->source->description,
+                    'geolocation' => $asset_item_value->source->geolocation,
+                    'licence' => $asset_item_value->source->licence,
+                    'mimetype' => $asset_item_value->source->mimetype,
+                    'files' => $asset_files,
+                ];
             }
         }
         unset($content->assets);

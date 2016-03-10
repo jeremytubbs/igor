@@ -168,7 +168,7 @@ class IgorEloquentRepository implements IgorRepositoryInterface
                 $sequence = array_search($filename, array_keys($frontmatter));
             }
             $asset_source = AssetSource::firstOrNew(['uri' => $asset]);
-            $asset_source->sequence = isset($sequence) ? $sequence : 0;
+            $asset_source->sequence = isset($sequence) ? $sequence + 1 : 1;
             $asset_source->mimetype = \File::mimeType($asset);
             $asset_source->title = isset($frontmatter[$filename]['title']) ? $frontmatter[$filename]['title'] : null;
             $asset_source->alt = isset($frontmatter[$filename]['alt']) ? $frontmatter[$filename]['alt'] : null;
