@@ -58,7 +58,6 @@ class IgorBuildCommand extends Command
         $name = $this->getContentTypeName();
         $post_config_path = base_path("resources/static/$name/config.yaml");
         $this->files->put($post_config_path, '# Override main config.yaml here.');
-
     }
 
     protected function updateLaravelIgorConfig()
@@ -85,10 +84,5 @@ class IgorBuildCommand extends Command
     protected function getContentTypeName()
     {
         return str_plural(snake_case($this->name));
-    }
-
-    protected function json($data)
-    {
-        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     }
 }
