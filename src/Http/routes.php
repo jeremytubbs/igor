@@ -2,11 +2,10 @@
 
 Route::group(['middleware' => ['web']], function () {
     if (config('igor.use_content_routes') == true) {
-        if (null !== config('igor.content_type_routes')) {
-            foreach (config('igor.content_type_routes') as $type) {
-                Route::get($type, 'Jeremytubbs\Igor\Http\Controllers\IgorPostController@index');
-                Route::get($type.'/{slug}', 'Jeremytubbs\Igor\Http\Controllers\IgorPostController@show');
-            }
+        foreach (config('igor.types') as $type) {
+            if (config("igor.content_type_routes.$type")) $type = config("igor.content_type_routes.$type");
+            Route::get($type, 'Jeremytubbs\Igor\Http\Controllers\IgorPostController@index');
+            Route::get($type.'/{slug}', 'Jeremytubbs\Igor\Http\Controllers\IgorPostController@show');
         }
     }
 
@@ -39,7 +38,11 @@ Route::group(['middleware' => ['auth:api', 'throttle']], function() {
         Route::resource('contents', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentController', ['except' => [
             'create', 'edit'
         ]]);
-        // Route::resource('types', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentTypeController');
-        // Route::resource('contents.assets', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentAssetController');
+        Route::resource('types', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentTypeController', ['except' => [
+            'create', 'edit'
+        ]]);
+        // Route::resource('contents.assets', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentAssetController', ['except' => [
+        //     'create', 'edit'
+        // ]]);
     });
 });

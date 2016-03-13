@@ -52,7 +52,8 @@ class IgorSitemapController extends Controller
                 }
             }
 
-            foreach (config('igor.content_type_routes') as $type => $route) {
+            foreach (config('igor.types') as $type) {
+                if (config("igor.content_type_routes.$type")) $type = config("igor.content_type_routes.$type");
                 $content_type_id = $this->igor->findContentTypeId($type);
                 // get all posts from db, with image relations
                  $posts = Content::where('content_type_id', '=', $content_type_id)
@@ -74,7 +75,7 @@ class IgorSitemapController extends Controller
                                 ];
                             }
                         }
-                        $sitemap->add(\URL::to($route.'/'.$post->slug), $post->updated_at, '0.8', 'weekly', $images);
+                        $sitemap->add(\URL::to($type.'/'.$post->slug), $post->updated_at, '0.8', 'weekly', $images);
                     }
                 }
             }
