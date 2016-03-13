@@ -36,8 +36,10 @@ Route::group(['middleware' => ['auth:api', 'throttle']], function() {
         $prefix = 'v1';
     }
     Route::group(['domain' => $domain, 'prefix' => $prefix], function () {
-        Route::resource('contents', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentController');
-        Route::resource('types', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentTypeController');
-        Route::resource('contents.assets', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentAssetController');
+        Route::resource('contents', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentController', ['except' => [
+            'create', 'edit'
+        ]]);
+        // Route::resource('types', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentTypeController');
+        // Route::resource('contents.assets', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentAssetController');
     });
 });

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Jeremytubbs\Igor\Models\Content;
 
 class IgorContentAssetController extends Controller
 {
@@ -14,18 +15,27 @@ class IgorContentAssetController extends Controller
      *
      * @return Response
      */
-    public function index($contentId)
+    public function index()
     {
         //
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
-    public function create(Request $request)
+    public function store()
     {
         //
     }
@@ -33,10 +43,21 @@ class IgorContentAssetController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  string  $slug
      * @return Response
      */
-    public function show($ContentId, $AssetId)
+    public function show($slug)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit($id)
     {
         //
     }
@@ -47,7 +68,7 @@ class IgorContentAssetController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $ContentId, $AssetId)
+    public function update($id)
     {
         //
     }
@@ -58,7 +79,7 @@ class IgorContentAssetController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($AssetId)
+    public function destroy($id)
     {
         //
     }

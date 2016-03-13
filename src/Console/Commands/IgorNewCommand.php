@@ -61,4 +61,11 @@ class IgorNewCommand extends Command
 
         $this->info('New '. str_singular($this->type) . ' created: ' . $this->title);
     }
+
+    protected function compilePostStub()
+    {
+        $stub = $this->files->get(__DIR__ . '/../../stubs/post/index.stub');
+        $stub = str_replace('{{title}}', $this->title, $stub);
+        return $stub;
+    }
 }
