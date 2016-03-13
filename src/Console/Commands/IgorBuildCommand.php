@@ -50,6 +50,7 @@ class IgorBuildCommand extends Command
         $this->files->makeDirectory(base_path('resources/static/'. $this->getContentTypeName()));
         $this->updateStaticConfig();
         $this->makePostConfig();
+        $this->updateLaravelIgorConfig();
     }
 
     protected function makePostConfig()
@@ -58,6 +59,17 @@ class IgorBuildCommand extends Command
         $post_config_path = base_path("resources/static/$name/config.yaml");
         $this->files->put($post_config_path, '# Override main config.yaml here.');
 
+    }
+
+    protected function updateLaravelIgorConfig()
+    {
+        $type = $this->getContentTypeName();
+        $config = config('igor');
+        array_push($config['types'], $type);
+        $types = "'".implode("', '", array_values($config['types']))."'";
+        $igorConfig = $this->files->get(config_path('igor.php'));
+        $igorConfig = preg_replace("/('types' => )\[.*?\]/", "'types' => [$types]", $igorConfig);
+        $this->files->put(config_path('igor.php'), $igorConfig);
     }
 
     protected function updateStaticConfig()
@@ -73,5 +85,10 @@ class IgorBuildCommand extends Command
     protected function getContentTypeName()
     {
         return str_plural(snake_case($this->name));
+    }
+
+    protected function json($data)
+    {
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     }
 }
