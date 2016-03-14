@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Content extends Model
 {
-    protected $guarded = ['id'];
+    protected $fillable = ['content_type_id', 'title', 'slug', 'body', 'layout', 'featured', 'published', 'published_at', 'meta_title', 'meta_description', 'path', 'last_modified', 'config'];
 
     protected $dates = ['published_at'];
 
