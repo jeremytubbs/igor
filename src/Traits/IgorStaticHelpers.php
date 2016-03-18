@@ -2,6 +2,7 @@
 
 namespace Jeremytubbs\Igor\Traits;
 
+use File;
 use Jeremytubbs\VanDeGraaff\Generate;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Symfony\Component\Yaml\Parser;
@@ -13,7 +14,7 @@ trait IgorStaticHelpers {
         // add post id to config
         $config = $this->prependToFrontmatter($config, 'id', $id);
         $generator = new Generate($config, rtrim($markdown));
-        file_put_contents($file, $generator->makeStatic());
+        File::put($file, $generator->makeStatic());
     }
 
     public function getConfig($type)
@@ -96,7 +97,7 @@ trait IgorStaticHelpers {
 
     public function getAssetSources($image_path)
     {
-        $files = \File::allFiles($image_path);
+        $files = File::allFiles($image_path);
         return count($files) > 0 ? $files : null;
     }
 }
