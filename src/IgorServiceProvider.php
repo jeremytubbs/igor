@@ -2,8 +2,8 @@
 
 namespace Jeremytubbs\Igor;
 
+use Jeremytubbs\Igor\IgorAssets;
 use Illuminate\Support\ServiceProvider;
-use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
 
 class IgorServiceProvider extends ServiceProvider
 {
@@ -73,10 +73,12 @@ class IgorServiceProvider extends ServiceProvider
     public function setEventListeners()
     {
         \Event::listen('resizer', function($data) {
-            (new IgorRepository)->updateContentAssets($data);
+            $path = substr(dirname($data['source']), 0, -7);
+            (new IgorAssets($path))->handleImageResponseEvent($data);
         });
         \Event::listen('deepzoom', function($data) {
-            (new IgorRepository)->updateContentAssets($data);
+            $path = substr(dirname($data['source']), 0, -7);
+            (new IgorAssets($path))->handleImageResponseEvent($data);
         });
     }
 }

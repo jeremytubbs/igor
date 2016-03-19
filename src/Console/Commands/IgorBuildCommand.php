@@ -51,7 +51,7 @@ class IgorBuildCommand extends Command
         $this->files->makeDirectory(base_path('resources/static/'. $this->getContentTypeName()));
         $this->updateStaticConfig();
         $this->makePostConfig();
-        $this->updateConfigTypes();
+        $this->updateTypes();
     }
 
     protected function makePostConfig()
@@ -67,7 +67,7 @@ class IgorBuildCommand extends Command
         $config = $this->files->get($config_path);
         $config = Yaml::parse($config);
         $config['types'][] = $this->getContentTypeName();
-        $config = Yaml::dump($config, 2);
+        $config = Yaml::dump($config, 3);
         $this->files->put($config_path, $config);
     }
 }

@@ -9,6 +9,42 @@ use Symfony\Component\Yaml\Parser;
 
 trait IgorStaticHelpers {
 
+    public function setPaths($path)
+    {
+        $this->path = $path;
+        $path_parts = pathinfo($path);
+        $this->post_type = basename($path_parts['dirname']);
+        $this->post_model = ucfirst(str_singular($this->post_type));
+        $this->post_directory = $path_parts['basename'];
+        $this->index_path = $path.'/index.md';
+        $this->images_path = $path.'/images';
+    }
+
+    public function setDischarger($file)
+    {
+        $this->discharger = new Discharge(file_get_contents($file));
+    }
+
+    public function setFrontmatter()
+    {
+        $this->frontmatter = $this->discharger->getFrontmatter();
+    }
+
+    public function setId()
+    {
+        $this->id = isset($this->frontmatter['id']) ? $this->frontmatter['id'] : null;
+    }
+
+    public function setPost()
+    {
+        $this->post = $this->content->firstOrCreate(['id' => $this->id]);
+    }
+
+    public function updateId()
+    {
+        $this->id = $this->post->id;
+    }
+
     public function regenerateStatic($id, $file, $config, $markdown)
     {
         // add post id to config

@@ -2,9 +2,19 @@
 
 namespace Jeremytubbs\Igor;
 
-use Jeremytubbs\Igor\IgorAssets;
+use App\Tag;
+use App\Content;
+use App\Category;
+use Jeremytubbs\Igor\Models\Column;
+use Jeremytubbs\Igor\Models\ColumnType;
+use Jeremytubbs\Igor\Models\ContentType;
 use Jeremytubbs\VanDeGraaff\Discharge;
-use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentTagRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentTypeRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentCategoryRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnTypeRepository;
 
 class Igor
 {
@@ -15,9 +25,14 @@ class Igor
     /**
      * @param string $path
      */
-    public function __construct($path, IgorRepository $igor)
+    public function __construct($path)
     {
-        $this->igor = $igor;
+        $this->category = new EloquentCategoryRepository(new Category());
+        $this->column = new EloquentColumnRepository(new Column());
+        $this->columnType = new EloquentColumnTypeRepository(new ColumnType());
+        $this->content = new EloquentContentRepository(new Content());
+        $this->contentType = new EloquentContentTypeRepository(new ContentType());
+        $this->tag = new EloquentTagRepository(new Tag());
         $this->setPaths($path);
         $this->setDischarger($this->index_path);
         $this->setFrontmatter();
@@ -29,85 +44,103 @@ class Igor
     public function reAnimate()
     {
         // check if published_at is part of frontmatter if published is true
-        if (! isset($this->frontmatter['published_at']) && $this->frontmatter['published']) {
-            $this->frontmatter = $this->prependToFrontmatter($this->frontmatter, 'published_at', date('Y-m-d H:i:s'));
-        }
+        $this->addOrRemovePublishedAtTimeToFrontmatter();
 
         // get last modified unixtime from file
         $lastModified = filemtime($this->index_path);
 
         // check if file has been modified since last save
         if ($this->post->last_modified != $lastModified) {
-            $this->igor->updateContent($this->post, $this->path, $this->discharger);
-            $this->igor->updateContentCustomColumns($this->post, $this->post_type, $this->discharger);
-
-            // save categories
-            if (isset($this->frontmatter['categories'])) {
-                $this->igor->updateContentCategories($this->post, $this->frontmatter['categories']);
-            }
-
-            // save tags
-            if (isset($this->frontmatter['tags'])) {
-                $this->igor->updateContentTags($this->post, $this->frontmatter['tags']);
-            }
+            $data = $this->prepareContentData();
+            $this->post = $this->content->update($this->post, $data);
+            $this->addSlugToFrontmatter();
+            $this->regenerateStatic($this->post->id, $this->path.'/index.md', $this->frontmatter, $this->discharger->getMarkdown());
+            clearstatcache();
+            $data['last_modified'] = filemtime($this->path.'/index.md');
+            $this->post = $this->content->update($this->post, $data);
         }
     }
 
-    public function reAnimateAssets() {
-        $assets_files = $this->getAssetSources($this->images_path);
-        $assets_frontmatter = isset($this->frontmatter['assets']) ? $this->frontmatter['assets'] : [];
-        $assets_database = $this->igor->getContentDatabaseAssetSources($this->post_model, $this->id, $assets_files);
-        if ($assets_files !== null) {
-            $this->igor->createOrUpdateAssetSources($assets_files, $assets_frontmatter);
-            foreach ($assets_files as $asset_file) {
-                if (in_array(basename($asset_file), array_keys($assets_frontmatter))) {
-                    (new IgorAssets($this->igor))->handleImage($asset_file, $this->frontmatter);
-                    $this->igor->setAssetSourceLastModified($asset_file);
-                }
+    public function prepareContentData()
+    {
+        $data = $this->frontmatter;
+        $content = $this->discharger->getContent();
+        $data['body'] = $content;
+        $data['slug'] = isset($data['slug']) ? $data['slug'] : str_slug($data['title']);
+        $data['content_type_id'] = $this->contentType->findIdBySlug($this->findContentTypeName($this->path));
+        $data['published'] = isset($data['published']) ? $data['published'] : false;
+        $data['published_at'] = $data['published'] ? $data['published_at'] : null;
+        $data['meta_title'] = isset($data['meta_title']) ? $data['meta_title'] : $data['title'];
+        $data['meta_description'] = isset($data['meta_description']) ? $data['meta_description'] : $this->getExcerpt($content, config('igor.excerpt_separator'));
+        $data['path'] = $this->path;
+        $data['config'] = isset($data['config']) ? json_encode($data['config']) : null;
+        $data['columns'] = $this->getCustomColumnIds();
+        $data['categories'] = $this->getCategoryIds();
+        $data['tags'] = $this->getTagIds();
+        return $data;
+    }
+
+    public function addSlugToFrontmatter()
+    {
+        if (! isset($this->frontmatter['slug']) || $this->frontmatter['slug'] != $this->post->slug) {
+            $this->frontmatter = $this->prependToFrontmatter($this->frontmatter, 'slug', $this->post->slug);
+        }
+    }
+
+    public function addOrRemovePublishedAtTimeToFrontmatter()
+    {
+        if (! isset($this->frontmatter['published_at']) && $this->frontmatter['published']) {
+            $this->frontmatter = $this->prependToFrontmatter($this->frontmatter, 'published_at', date('Y-m-d H:i:s'));
+        }
+        if (isset($this->frontmatter['published_at']) && ! $this->frontmatter['published']) {
+            unset($this->frontmatter['published_at']);
+        }
+    }
+
+    public function getCustomColumnIds()
+    {
+        $custom_columns = (null !== config("igor.custom_columns.$this->post_type")) ? config("igor.custom_columns.$this->post_type") : [];
+        $custom_column_ids = [];
+        foreach($custom_columns as $name => $type) {
+            if (isset($this->frontmatter[$name])) {
+                $column_type_id = $this->columnType->findIdByName($name);
+                $column = $this->column->firstOrCreate([
+                    'column_type_id' => $column_type_id,
+                    $type => $this->frontmatter[$name],
+                ]);
+                $custom_column_ids[] = $column->id;
             }
         }
-        if ($assets_database !== null) {
-            foreach ($assets_database as $asset_database) {
-                if (! in_array(basename($asset_database), array_keys($assets_frontmatter))) {
-                    $this->igor->deleteAssetSource($this->post_model, $this->id, $asset_database);
-                }
+        return $custom_column_ids;
+    }
+
+    public function getTagIds()
+    {
+        $tag_ids = [];
+        if (isset($this->frontmatter['tags'])) {
+            foreach($this->frontmatter['tags'] as $t) {
+                $tag = $this->tag->firstOrCreate([
+                    'name' => $t,
+                    'slug' => str_slug($t)
+                ]);
+                $tag_ids[] = $tag->id;
             }
         }
+        return $tag_ids;
     }
 
-    public function setPaths($path)
+    public function getCategoryIds()
     {
-        $this->path = $path;
-        $path_parts = pathinfo($path);
-        $this->post_type = basename($path_parts['dirname']);
-        $this->post_model = ucfirst(str_singular($this->post_type));
-        $this->post_directory = $path_parts['basename'];
-        $this->index_path = $path.'/index.md';
-        $this->images_path = $path.'/images';
-    }
-
-    public function setDischarger($file)
-    {
-        $this->discharger = new Discharge(file_get_contents($file));
-    }
-
-    public function setFrontmatter()
-    {
-        $this->frontmatter = $this->discharger->getFrontmatter();
-    }
-
-    public function setId()
-    {
-        $this->id = isset($this->frontmatter['id']) ? $this->frontmatter['id'] : null;
-    }
-
-    public function setPost()
-    {
-        $this->post = $this->igor->createOrFindContent($this->id);
-    }
-
-    public function updateId()
-    {
-        $this->id = $this->post->id;
+        $category_ids = [];
+        if (isset($this->frontmatter['categories'])) {
+            foreach($this->frontmatter['categories'] as $c) {
+                $category = $this->category->firstOrCreate([
+                    'name' => $c,
+                    'slug' => str_slug($c)
+                ]);
+                $category_ids[] = $category->id;
+            }
+        }
+        return $category_ids;
     }
 }

@@ -14,6 +14,8 @@ class IgorPostController extends Controller
 
     public function __construct(IgorRepository $igor, ContentTransformer $transformer)
     {
+        $this->content = new EloquentContentRepository(new Content());
+        $this->contentType = new EloquentContentTypeRepository(new ContentType());
         $this->igor = $igor;
         $this->transformer = $transformer;
     }
@@ -25,8 +27,8 @@ class IgorPostController extends Controller
      */
     public function index(Request $request)
     {
-        $custom_type_name = array_search($request->segment(1), config("igor.content_type_routes"));
-        $content_type_id = $this->igor->findContentTypeId($custom_type_name);
+        $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
+        $content_type_id = $this->contentType->findIdBySlug($custom_type_slug);
         $posts = Content::where('content_type_id', '=', $content_type_id)
             ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
             ->where('published', '=', true)
@@ -43,8 +45,8 @@ class IgorPostController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $custom_type_name = array_search($request->segment(1), config("igor.content_type_routes"));
-        $content_type_id = $this->igor->findContentTypeId($custom_type_name);
+        $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
+        $content_type_id = $this->contentType->findIdBySlug($custom_type_slug);
         $post = Content::where('slug', '=', $slug)
             ->where('content_type_id', '=', $content_type_id)
             ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')

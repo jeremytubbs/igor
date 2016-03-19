@@ -4,7 +4,7 @@ namespace Jeremytubbs\Igor\Traits;
 
 trait IgorConfigHelpers
 {
-    protected function updateConfigTypes()
+    protected function updateTypes()
     {
         $type = $this->getContentTypeName();
         $config = config('igor');
@@ -13,6 +13,26 @@ trait IgorConfigHelpers
         $igorConfig = $this->files->get(config_path('igor.php'));
         $igorConfig = preg_replace("/('types' => )\[.*?\]/", "'types' => [$types]", $igorConfig);
         $this->files->put(config_path('igor.php'), $igorConfig);
+    }
+
+    protected function removeType($type)
+    {
+        //
+    }
+
+    protected function updateContentTypeRoutes($type, $route)
+    {
+        //
+    }
+
+    protected function updateCustomColumns($type, $column, $column_type)
+    {
+        //
+    }
+
+    protected function updateBoolean($key)
+    {
+        //
     }
 
     protected function getContentTypeName()

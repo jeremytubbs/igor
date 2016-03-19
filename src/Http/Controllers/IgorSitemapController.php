@@ -12,6 +12,7 @@ class IgorSitemapController extends Controller
 {
     public function __construct(IgorRepository $igor)
     {
+        $this->contentType = new EloquentContentTypeRepository(new ContentType());
         $this->igor = $igor;
     }
 
@@ -54,7 +55,7 @@ class IgorSitemapController extends Controller
 
             foreach (config('igor.types') as $type) {
                 if (config("igor.content_type_routes.$type")) $type = config("igor.content_type_routes.$type");
-                $content_type_id = $this->igor->findContentTypeId($type);
+                $content_type_id = $this->contentType->findIdBySlug($type);
                 // get all posts from db, with image relations
                  $posts = Content::where('content_type_id', '=', $content_type_id)
                     ->with('assets', 'assets.source', 'assets.type')
