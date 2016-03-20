@@ -31,7 +31,6 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
      */
     public function attachAssets($content, $data)
     {
-        
         $content->assets()->attach(array_get($data, 'assets', []));
         return $content;
     }

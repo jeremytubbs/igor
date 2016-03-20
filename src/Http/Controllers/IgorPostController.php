@@ -3,20 +3,21 @@
 namespace Jeremytubbs\Igor\Http\Controllers;
 
 use App\Content;
-use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Jeremytubbs\Igor\Models\ContentType;
 use Jeremytubbs\Igor\Transformers\ContentTransformer;
-use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentTypeRepository;
 
 class IgorPostController extends Controller
 {
 
-    public function __construct(IgorRepository $igor, ContentTransformer $transformer)
+    public function __construct(ContentTransformer $transformer)
     {
         $this->content = new EloquentContentRepository(new Content());
         $this->contentType = new EloquentContentTypeRepository(new ContentType());
-        $this->igor = $igor;
         $this->transformer = $transformer;
     }
 
@@ -28,8 +29,8 @@ class IgorPostController extends Controller
     public function index(Request $request)
     {
         $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
-        $content_type_id = $this->contentType->findIdBySlug($custom_type_slug);
-        $posts = Content::where('content_type_id', '=', $content_type_id)
+        $content_type = $this->contentType->findIdBySlug($custom_type_slug);
+        $posts = Content::where('content_type_id', '=', $content_type->id)
             ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
             ->where('published', '=', true)
             ->get();
@@ -46,9 +47,9 @@ class IgorPostController extends Controller
     public function show(Request $request, $slug)
     {
         $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
-        $content_type_id = $this->contentType->findIdBySlug($custom_type_slug);
+        $content_type = $this->contentType->findIdBySlug($custom_type_slug);
         $post = Content::where('slug', '=', $slug)
-            ->where('content_type_id', '=', $content_type_id)
+            ->where('content_type_id', '=', $content_type->id)
             ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
             ->where('published', '=', 1)
             ->firstOrFail();
