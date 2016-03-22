@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Transformers\ContentTransformer;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentCategoryRepository;
 
 class IgorCategoryController extends Controller
 {
@@ -15,6 +17,8 @@ class IgorCategoryController extends Controller
 
     public function __construct(ContentTransformer $transformer)
     {
+        $this->category = new EloquentCategoryRepository(new Category());
+        $this->content = new EloquentContentRepository(new Content());
         $this->transformer = $transformer;
     }
 
@@ -25,7 +29,7 @@ class IgorCategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::get();
+        $categories = $this->category->all();
         return view('igor::categories.index', compact('categories'));
     }
 
@@ -40,13 +44,7 @@ class IgorCategoryController extends Controller
         // push category into session
         $request->session()->put('category', $slug);
 
-        $contents = Content::where('published', '=', true)
-            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
-            ->whereHas('categories', function ($query) use ($slug) {
-                $query->where('slug', '=', $slug);
-            })
-            ->whereNotNull('content_type_id') // page content type is null
-            ->paginate();
+        $contents = $this->content->paginateByCategory($slug);
 
         $contents = $this->transformer->collection($contents);
         if (! $contents) return abort(404);

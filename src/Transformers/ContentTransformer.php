@@ -10,9 +10,9 @@ class ContentTransformer
     {
         $content_type = '';
         if (isset($content->type)) {
-            $content_type = '/'.config("igor.content_type_routes")[$content->type->slug];
+            $content_type = config("igor.content_type_routes")[$content->type->slug];
         }
-        $content->url = config('app.url').$content_type.'/'.$content->slug;
+        $content->url = config('app.url').'/'.$content_type.'/'.$content->slug;
 
         $content->config = json_decode($content->config);
 

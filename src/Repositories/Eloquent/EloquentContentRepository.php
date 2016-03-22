@@ -45,4 +45,16 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
         return $content->with($relations);
     }
 
+    public function paginateByCategory($category, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
+    {
+        return $this->model->where('published', '=', true)
+            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->whereHas('categories', function ($query) use ($category) {
+                $query->where('slug', '=', $category);
+            })
+            ->orderBy($orderBy, $sortOrder)
+            ->whereNotNull('content_type_id') // page content type is null
+            ->paginate($take);
+    }
+
 }
