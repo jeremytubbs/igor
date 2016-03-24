@@ -57,4 +57,13 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
             ->paginate($take);
     }
 
+    public function getPageBySlug($slug)
+    {
+        return $this->model->where('slug', '=', $slug)
+            ->where('content_type_id', '=', null)
+            ->where('published', '=', true)
+            ->with('assets', 'assets.type', 'assets.source')
+            ->firstOrFail();
+    }
+
 }

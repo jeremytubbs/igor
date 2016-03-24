@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Transformers\ContentTransformer;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
 
 class IgorPageController extends Controller
 {
     public function __construct(ContentTransformer $transformer)
     {
+        $this->content = new EloquentContentRepository(new Content());
         $this->transformer = $transformer;
     }
 
@@ -23,11 +25,7 @@ class IgorPageController extends Controller
      */
     public function show($slug)
     {
-        $page = Content::where('slug', '=', $slug)
-            ->where('content_type_id', '=', null)
-            ->where('published', '=', true)
-            ->with('assets', 'assets.type', 'assets.source')
-            ->firstOrFail();
+        $page = $this->content->getPageBySlug($slug);
         $page = $this->transformer->item($page);
         return view('igor::pages.show', compact('page'));
     }
