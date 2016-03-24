@@ -1,5 +1,7 @@
 @extends('app')
 
 @section('content')
-{{ $posts }}
+  @foreach($posts as $post)
+    {{ $post->title }}
+  @endforeach
 @endsection

@@ -25,7 +25,7 @@ class IgorPageController extends Controller
      */
     public function show($slug)
     {
-        $page = $this->content->getPageBySlug($slug);
+        $page = $this->content->findBySlugAndType($slug);
         $page = $this->transformer->item($page);
         return view('igor::pages.show', compact('page'));
     }

@@ -57,13 +57,21 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
             ->paginate($take);
     }
 
-    public function getPageBySlug($slug)
+    public function paginateByType($type, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
     {
-        return $this->model->where('slug', '=', $slug)
-            ->where('content_type_id', '=', null)
-            ->where('published', '=', true)
-            ->with('assets', 'assets.type', 'assets.source')
-            ->firstOrFail();
+        return $this->model->where('published', '=', true)
+            ->where('content_type_id', '=', $type)
+            ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->orderBy($orderBy, $sortOrder)
+            ->paginate($take);
     }
 
+    public function findBySlugAndType($slug, $type = null)
+    {
+        return  $this->model->where('published', '=', true)
+            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->where('slug', '=', $slug)
+            ->where('content_type_id', '=', $type)
+            ->first();
+    }
 }

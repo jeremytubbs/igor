@@ -6,14 +6,15 @@ use App\Content;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Jeremytubbs\Igor\Repositories\IgorEloquentRepository as IgorRepository;
+use Jeremytubbs\Igor\Models\ContentType;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentTypeRepository;
 
 class IgorSitemapController extends Controller
 {
-    public function __construct(IgorRepository $igor)
+    public function __construct()
     {
         $this->contentType = new EloquentContentTypeRepository(new ContentType());
-        $this->igor = $igor;
     }
 
     /**
@@ -54,8 +55,8 @@ class IgorSitemapController extends Controller
             }
 
             foreach (config('igor.types') as $type) {
-                if (config("igor.content_type_routes.$type")) $type = config("igor.content_type_routes.$type");
                 $content_type_id = $this->contentType->findIdBySlug($type);
+                if (config("igor.content_type_routes.$type")) $type = config("igor.content_type_routes.$type");
                 // get all posts from db, with image relations
                  $posts = Content::where('content_type_id', '=', $content_type_id)
                     ->with('assets', 'assets.source', 'assets.type')

@@ -30,10 +30,7 @@ class IgorPostController extends Controller
     {
         $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
         $content_type = $this->contentType->findIdBySlug($custom_type_slug);
-        $posts = Content::where('content_type_id', '=', $content_type->id)
-            ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
-            ->where('published', '=', true)
-            ->get();
+        $posts = $this->content->paginateByType($content_type);
         $posts = $this->transformer->collection($posts);
         return view('igor::posts.index', compact('posts'));
     }
@@ -48,11 +45,7 @@ class IgorPostController extends Controller
     {
         $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
         $content_type = $this->contentType->findIdBySlug($custom_type_slug);
-        $post = Content::where('slug', '=', $slug)
-            ->where('content_type_id', '=', $content_type->id)
-            ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
-            ->where('published', '=', 1)
-            ->firstOrFail();
+        $post = $this->content->findBySlugAndType($slug, $content_type);
         $post = $this->transformer->item($post);
         return view('igor::posts.show', compact('post'));
     }
