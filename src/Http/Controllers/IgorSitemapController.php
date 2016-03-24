@@ -63,6 +63,7 @@ class IgorSitemapController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->get();
 
+                $sitemap->add(\URL::to($type), $posts->first()['updated_at'], '0.8', 'weekly', $images);
 
                 // add every post to the sitemap
                 foreach ($posts as $post) {
