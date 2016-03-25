@@ -75,15 +75,6 @@ class IgorWatchCommand extends Command
                 $igor = new IgorAssets($post);
                 $igor->reAnimateAssets();
             }
-            $content_type_id = $this->contentType->findIdBySlug($type);
-            $contents_database = $this->content->getByAttributes(['content_type_id' => $content_type_id]);
-            foreach($contents_database as $content) {
-                if (! in_array($content->path, $contents)) {
-                    //Todo: also handle delete of assets for database
-                    $this->content->destroy($content);
-                    $this->info('Delete: '. $content->path);
-                }
-            }
         }
     }
 
@@ -101,9 +92,14 @@ class IgorWatchCommand extends Command
 
         foreach($contentTypes as $type) {
             $content_type = $this->contentType->firstOrCreate([
-                'name' => $type,
-                'slug' => str_slug($type)
+                'name' => $type
             ]);
+            if (null !== config("igor.content_type_routes.$type")) {
+                $slug = config("igor.content_type_routes.$type");
+                $this->contentType->update($content_type, ['slug' => $slug]);
+            } else {
+                $this->contentType->update($content_type, ['slug' => str_slug($type)]);
+            }
         }
     }
 

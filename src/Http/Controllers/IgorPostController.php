@@ -28,7 +28,7 @@ class IgorPostController extends Controller
      */
     public function index(Request $request)
     {
-        $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
+        $custom_type_slug = $request->segment(1);
         $content_type = $this->contentType->findIdBySlug($custom_type_slug);
         $posts = $this->content->getByType($content_type);
         $posts = $this->transformer->collection($posts);
@@ -43,7 +43,7 @@ class IgorPostController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
+        $custom_type_slug = $request->segment(1);
         $content_type = $this->contentType->findIdBySlug($custom_type_slug);
         $post = $this->content->findBySlugAndType($slug, $content_type);
         $post = $this->transformer->item($post);

@@ -67,7 +67,7 @@ class Igor
         $content = $this->discharger->getContent();
         $data['body'] = $content;
         $data['slug'] = isset($data['slug']) ? $data['slug'] : str_slug($data['title']);
-        $data['content_type_id'] = $this->contentType->findIdBySlug($this->findContentTypeName($this->path));
+        $data['content_type_id'] = $this->contentType->findIdByName($this->findContentTypeName($this->path));
         $data['published'] = isset($data['published']) ? $data['published'] : false;
         $data['published_at'] = $data['published'] ? $data['published_at'] : null;
         $data['meta_title'] = isset($data['meta_title']) ? $data['meta_title'] : $data['title'];
