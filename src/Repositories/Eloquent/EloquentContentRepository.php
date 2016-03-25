@@ -45,25 +45,28 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
         return $content->with($relations);
     }
 
-    public function paginateByCategory($category, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
+    public function getByCategory($category, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
     {
-        return $this->model->where('published', '=', true)
+        $query = $this->model->where('published', '=', true)
             ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
-            ->whereHas('categories', function ($query) use ($category) {
-                $query->where('slug', '=', $category);
+            ->whereHas('categories', function ($q) use ($category) {
+                $q->where('slug', '=', $category);
             })
             ->orderBy($orderBy, $sortOrder)
-            ->whereNotNull('content_type_id') // page content type is null
-            ->paginate($take);
+            ->whereNotNull('content_type_id'); // page content type is null
+
+        if ($take) return $query->paginate($take);
+        return $query->get();
     }
 
-    public function paginateByType($type, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
+    public function getByType($type, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
     {
-        return $this->model->where('published', '=', true)
+        $query = $this->model->where('published', '=', true)
             ->where('content_type_id', '=', $type)
             ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
-            ->orderBy($orderBy, $sortOrder)
-            ->paginate($take);
+            ->orderBy($orderBy, $sortOrder);
+        if ($take) return $query->paginate($take);
+        return $query->get();
     }
 
     public function findBySlugAndType($slug, $type = null)

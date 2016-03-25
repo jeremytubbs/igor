@@ -30,7 +30,7 @@ class IgorPostController extends Controller
     {
         $custom_type_slug = array_search($request->segment(1), config("igor.content_type_routes"));
         $content_type = $this->contentType->findIdBySlug($custom_type_slug);
-        $posts = $this->content->paginateByType($content_type);
+        $posts = $this->content->getByType($content_type);
         $posts = $this->transformer->collection($posts);
         return view('igor::posts.index', compact('posts'));
     }

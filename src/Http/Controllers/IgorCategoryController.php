@@ -44,7 +44,7 @@ class IgorCategoryController extends Controller
         // push category into session
         $request->session()->put('category', $slug);
 
-        $contents = $this->content->paginateByCategory($slug);
+        $contents = $this->content->getByCategory($slug);
 
         $contents = $this->transformer->collection($contents);
         if (! $contents) return abort(404);

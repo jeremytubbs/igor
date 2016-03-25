@@ -2,6 +2,8 @@
 
 namespace Jeremytubbs\Igor\Http\Controllers;
 
+use App;
+use URL;
 use App\Content;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -14,6 +16,7 @@ class IgorSitemapController extends Controller
 {
     public function __construct()
     {
+        $this->content = new EloquentContentRepository(new Content());
         $this->contentType = new EloquentContentTypeRepository(new ContentType());
     }
 
@@ -25,7 +28,7 @@ class IgorSitemapController extends Controller
     public function show()
     {
         // create new sitemap object
-        $sitemap = \App::make("sitemap");
+        $sitemap = App::make("sitemap");
 
         // set cache key (string), duration in minutes (Carbon|Datetime|int), turn on/off (boolean)
         // by default cache is disabled
@@ -33,11 +36,7 @@ class IgorSitemapController extends Controller
 
         // check if there is cached sitemap and build new only if is not
         if (!$sitemap->isCached()) {
-
-            $pages = Content::with('assets', 'assets.source', 'assets.type')
-                ->where('content_type_id', '=', null)
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $pages = $this->content->getByType(null, null);
             foreach ($pages as $page) {
                 if($page->published == 1) {
                     $images = [];
@@ -50,7 +49,7 @@ class IgorSitemapController extends Controller
                             ];
                         }
                     }
-                    $sitemap->add(\URL::to($page->slug), $page->updated_at, '0.5', 'monthly', $images);
+                    $sitemap->add(URL::to($page->slug), $page->updated_at, '0.5', 'monthly', $images);
                 }
             }
 
@@ -58,12 +57,9 @@ class IgorSitemapController extends Controller
                 $content_type_id = $this->contentType->findIdBySlug($type);
                 if (config("igor.content_type_routes.$type")) $type = config("igor.content_type_routes.$type");
                 // get all posts from db, with image relations
-                 $posts = Content::where('content_type_id', '=', $content_type_id)
-                    ->with('assets', 'assets.source', 'assets.type')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+                $posts = $this->content->getByType($content_type_id, null);
 
-                $sitemap->add(\URL::to($type), $posts->first()['updated_at'], '0.8', 'weekly', $images);
+                $sitemap->add(URL::to($type), $posts->first()['updated_at'], '0.8', 'weekly', $images);
 
                 // add every post to the sitemap
                 foreach ($posts as $post) {
@@ -78,7 +74,7 @@ class IgorSitemapController extends Controller
                                 ];
                             }
                         }
-                        $sitemap->add(\URL::to($type.'/'.$post->slug), $post->updated_at, '0.8', 'weekly', $images);
+                        $sitemap->add(URL::to($type.'/'.$post->slug), $post->updated_at, '0.8', 'weekly', $images);
                     }
                 }
             }
