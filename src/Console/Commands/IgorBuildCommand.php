@@ -5,13 +5,11 @@ namespace Jeremytubbs\Igor\Console\Commands;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Composer;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Symfony\Component\Yaml\Yaml;
 
 class IgorBuildCommand extends Command
 {
-    use AppNamespaceDetectorTrait;
     use \Jeremytubbs\Igor\Traits\IgorConfigHelpers;
 
     /**
@@ -33,11 +31,10 @@ class IgorBuildCommand extends Command
      *
      * @return void
      */
-    public function __construct(Filesystem $files, Composer $composer)
+    public function __construct(Filesystem $files)
     {
         parent::__construct();
         $this->files = $files;
-        $this->composer = $composer;
     }
 
     /**
