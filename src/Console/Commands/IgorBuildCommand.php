@@ -17,7 +17,10 @@ class IgorBuildCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'igor:build {name}';
+    protected $signature = 'igor:build
+                            {type : Content post type.}
+                            {--route=null : Define a custom route for type.}
+                            {--columns=null : name|type||name|type}';
 
     /**
      * The console command description.
@@ -35,6 +38,7 @@ class IgorBuildCommand extends Command
     {
         parent::__construct();
         $this->files = $files;
+        $this->config = config('igor');
     }
 
     /**
@@ -44,27 +48,58 @@ class IgorBuildCommand extends Command
      */
     public function handle()
     {
-        $this->name = $this->argument('name');
-        $this->files->makeDirectory(base_path('resources/static/'. $this->getContentTypeName()));
-        $this->updateStaticConfig();
-        $this->makePostConfig();
-        $this->updateTypes();
+        $this->setContentType();
+        $this->setCustomRoute();
+        $this->setCustomColumns();
+        $path = base_path('resources/static/'. $this->type);
+        if (! $this->files->exists($path)) {
+            $this->files->makeDirectory($path);
+            $this->updateTypes();
+            $this->makePostConfig();
+        }
+        if ($this->route) {
+            $this->updateContentTypeRoutes();
+        }
+        if ($this->columns) {
+            $this->updateCustomColumns();
+        }
+        $this->saveConfig();
     }
 
     protected function makePostConfig()
     {
-        $name = $this->getContentTypeName();
-        $post_config_path = base_path("resources/static/$name/config.yaml");
+        $post_config_path = base_path("resources/static/$this->type/config.yaml");
         $this->files->put($post_config_path, '# Override main config.yaml here.');
     }
 
-    protected function updateStaticConfig()
+    protected function saveConfig()
     {
-        $config_path = base_path('resources/static/config.yaml');
-        $config = $this->files->get($config_path);
-        $config = Yaml::parse($config);
-        $config['types'][] = $this->getContentTypeName();
-        $config = Yaml::dump($config, 3);
-        $this->files->put($config_path, $config);
+        $config = $this->createConfig($this->setConfig());
+        $this->files->put(config_path('igor.php'), $config);
+    }
+
+    protected function setConfig()
+    {
+        $config = var_export($this->config, true);
+        $config = preg_replace('#(?:\A|\n)([ ]*)array \(#i', '[', $config); // Starts
+        $config = preg_replace('#\n([ ]*)\),#', "\n$1],", $config); // Ends
+        $config = preg_replace('#=> \[\n\s+\],\n#', "=> [],\n", $config); // Empties
+        if (gettype($this->config) == 'object') { // Deal with object states
+            $config = str_replace('__set_state(array(', '__set_state([', $config);
+            $config = preg_replace('#\)\)$#', "])", $config);
+        } else {
+            $config = preg_replace('#\)$#', "]", $config);
+        }
+        return $config;
+    }
+
+    protected function createConfig($config)
+    {
+        return <<<EOF
+<?php
+
+return $config;
+
+EOF;
     }
 }
