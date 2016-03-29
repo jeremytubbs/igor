@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Jeremytubbs\Igor\Models\Asset;
+use Jeremytubbs\Igor\Models\Content;
 
-class IgorContentAssetController extends Controller
+class IgorColumnController extends Controller
 {
     /**
      * Display a listing of the resource.
