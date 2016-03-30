@@ -8,10 +8,17 @@ use File;
 use Artisan;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Jeremytubbs\Igor\Models\Content;
+use App\Content;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
 
 class IgorContentController extends Controller
 {
+    public function __construct()
+    {
+        $this->content = new EloquentContentRepository(new Content());
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +26,7 @@ class IgorContentController extends Controller
      */
     public function index()
     {
-        return Content::with('type')->get();
+        return $this->content->getWith(['type']);
     }
 
     /**
@@ -30,7 +37,7 @@ class IgorContentController extends Controller
      */
     public function show($id)
     {
-        $content = Content::find($id);
+        $content = $this->content->find($id);
         return File::get($content->path.'/index.md');
     }
 
@@ -55,7 +62,7 @@ class IgorContentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $content = Content::find($id);
+        $content = $this->content->find($id);
         File::put($content->path.'/index.md', $request->input('index'));
     }
 
@@ -66,10 +73,10 @@ class IgorContentController extends Controller
      */
     public function destroy($id)
     {
-        $content = Content::find($id);
+        $content = $this->content->find($id);
         $success = File::deleteDirectory($contents->path);
         if ($success) {
-            Content::destroy($id);
+            $this->content->destroy($content);
         }
     }
 }
