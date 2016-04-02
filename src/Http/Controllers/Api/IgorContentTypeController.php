@@ -9,10 +9,15 @@ use Artisan;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Models\ContentType;
-use Jeremytubbs\Igor\Models\Content;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentTypeRepository;
 
 class IgorContentTypeController extends Controller
 {
+    public function __construct()
+    {
+        $this->contentType = new EloquentContentTypeRepository(new ContentType());
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +25,7 @@ class IgorContentTypeController extends Controller
      */
     public function index()
     {
-        return ContentType::all();
+        return $this->contentType->all();
     }
 
     /**
@@ -31,7 +36,7 @@ class IgorContentTypeController extends Controller
      */
     public function show($id)
     {
-        return ContentType::where('id', '=', $id)->with('contents')->get();
+        return $this->contentType->find($id);
     }
 
     /**
@@ -54,7 +59,7 @@ class IgorContentTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $content = Content::find($id);
+        //
     }
 
     /**
@@ -64,11 +69,10 @@ class IgorContentTypeController extends Controller
      */
     public function destroy($id)
     {
-        $content = Content::find($id);
-        $success = File::deleteDirectory(base_path("resources/static/$contents->slug"));
+        $contentType = $this->contentType->find($id);
+        $success = File::deleteDirectory(base_path("resources/static/$content->slug"));
         if ($success) {
-            ContentType::destroy($id);
-            Content::where('content_type_id', '=', $id)->destroy();
+            $this->contentType->destroy($contentType);
         }
     }
 }
