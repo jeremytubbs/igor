@@ -4,10 +4,12 @@ namespace Jeremytubbs\Igor\Http\Controllers;
 
 use App\Tag;
 use App\Content;
-use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Transformers\ContentTransformer;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentTagRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
 
 class IgorTagController extends Controller
 {
@@ -16,6 +18,8 @@ class IgorTagController extends Controller
     public function __construct(ContentTransformer $transformer)
     {
         $this->transformer = $transformer;
+        $this->tag = new EloquentTagRepository(new Tag());
+        $this->content = new EloquentContentRepository(new Content());
     }
 
     /**
@@ -25,7 +29,7 @@ class IgorTagController extends Controller
      */
     public function index()
     {
-        $tags = Tag::get();
+        $tags = $this->tag->all();
         return view('igor::tags.index', compact('tags'));
     }
 
@@ -37,14 +41,7 @@ class IgorTagController extends Controller
      */
     public function show($slug)
     {
-        $contents = Content::where('published', '=', true)
-            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.source')
-            ->whereHas('tags', function ($query) use ($slug) {
-                $query->where('slug', '=', $slug);
-            })
-            ->whereNotNull('content_type_id') // page content type is null
-            ->paginate();
-
+        $contents = $this->content->getByTag($slug);
         $contents = $this->transformer->collection($contents);
         if (! $contents) return abort(404);
         return view('igor::tags.show', compact('contents'));

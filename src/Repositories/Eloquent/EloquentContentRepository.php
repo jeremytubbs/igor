@@ -59,6 +59,20 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
         return $query->get();
     }
 
+    public function getByTag($tag, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
+    {
+        $query = $this->model->where('published', '=', true)
+            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->whereHas('tags', function ($q) use ($tag) {
+                $q->where('slug', '=', $tag);
+            })
+            ->orderBy($orderBy, $sortOrder)
+            ->whereNotNull('content_type_id'); // page content type is null
+
+        if ($take) return $query->paginate($take);
+        return $query->get();
+    }
+
     public function getByType($type, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
     {
         $query = $this->model->where('published', '=', true)
