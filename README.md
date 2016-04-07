@@ -73,7 +73,6 @@ resources/
 
 
 Todo Core:
-- Cleanup naming after switch to Content Types from Posts
 - Asset workflow for non-images
 - API
 - more documentation!
