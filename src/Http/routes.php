@@ -31,7 +31,7 @@ Route::group(['middleware' => ['auth:api', 'throttle']], function() {
     $domain = '';
     $prefix = 'api/v1';
     if (config('app.env') == 'production') {
-        $domain = 'api.jeremytubbs.com';
+        $domain = env('SITE_API_URL', '');
         $prefix = 'v1';
     }
     Route::group(['domain' => $domain, 'prefix' => $prefix], function () {
