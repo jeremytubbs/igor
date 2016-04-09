@@ -6,10 +6,16 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Jeremytubbs\Igor\Models\Content;
+use Jeremytubbs\Igor\Models\Column;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnRepository;
 
 class IgorColumnController extends Controller
 {
+    public function __construct()
+    {
+        $this->column = new EloquentColumnRepository(new Column());
+    }
+
     /**
      * Display a listing of the resource.
      *

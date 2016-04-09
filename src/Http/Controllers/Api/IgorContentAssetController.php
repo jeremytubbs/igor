@@ -6,10 +6,16 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Jeremytubbs\Igor\Models\Asset;
+use App\Asset;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentAssetRepository;
 
 class IgorContentAssetController extends Controller
 {
+    public function __construct()
+    {
+        $this->asset = new EloquentAssetRepository(new Asset());
+    }
+
     /**
      * Display a listing of the resource.
      *

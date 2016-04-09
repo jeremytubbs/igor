@@ -18,7 +18,6 @@ class IgorContentController extends Controller
         $this->content = new EloquentContentRepository(new Content());
     }
 
-
     /**
      * Display a listing of the resource.
      *

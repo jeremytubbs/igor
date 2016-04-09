@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Models\ColumnType;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnTypeRepository;
 
 class IgorColumnTypeController extends Controller
 {
+    public function __construct()
+    {
+        $this->columnType = new EloquentColumnTypeRepository(new ColumnType());
+    }
+
     /**
      * Display a listing of the resource.
      *
