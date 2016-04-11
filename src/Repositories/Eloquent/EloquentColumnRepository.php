@@ -10,7 +10,6 @@ class EloquentColumnRepository extends EloquentBaseRepository implements ColumnR
 {
     /**
      * Find a resource with type
-     * @param  array $relations
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getWithType()

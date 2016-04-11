@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Models\Column;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnRepository;
 
-class IgorColumnController extends Controller
+class IgorContentColumnController extends Controller
 {
     public function __construct()
     {
