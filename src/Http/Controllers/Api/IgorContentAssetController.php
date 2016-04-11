@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Content;
 use App\Asset;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentAssetRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
 
 class IgorContentAssetController extends Controller
 {
@@ -23,7 +25,7 @@ class IgorContentAssetController extends Controller
      */
     public function index()
     {
-        //
+        return $this->asset->getWithType();
     }
 
     /**

@@ -23,7 +23,7 @@ class IgorColumnController extends Controller
      */
     public function index()
     {
-        //
+        return $this->column->getWithType();
     }
 
     /**

@@ -8,5 +8,13 @@ use Jeremytubbs\Igor\Repositories\Contracts\ColumnRepositoryInterface as ColumnR
 
 class EloquentColumnRepository extends EloquentBaseRepository implements ColumnRepository
 {
-    //
+    /**
+     * Find a resource with type
+     * @param  array $relations
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getWithType()
+    {
+        return $this->model->with('type')->get();
+    }
 }

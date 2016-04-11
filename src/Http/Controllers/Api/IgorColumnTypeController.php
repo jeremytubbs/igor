@@ -23,7 +23,7 @@ class IgorColumnTypeController extends Controller
      */
     public function index()
     {
-        //
+        return $this->columnType->all();
     }
 
     /**
