@@ -2,9 +2,8 @@
 
 namespace Jeremytubbs\Igor\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Models\ColumnType;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnTypeRepository;
