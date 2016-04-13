@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Models\ColumnType;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnTypeRepository;
 
-class IgorColumnTypeController extends Controller
+class IgorTypeColumnController extends Controller
 {
     public function __construct()
     {
