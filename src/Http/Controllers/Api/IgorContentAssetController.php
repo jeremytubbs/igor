@@ -29,21 +29,11 @@ class IgorContentAssetController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
-    public function store()
+    public function store($content_id)
     {
         //
     }
@@ -51,21 +41,10 @@ class IgorContentAssetController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $slug
+     * @param  int  $type_id
      * @return Response
      */
-    public function show($slug)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
+    public function show($content_id, $id)
     {
         //
     }
@@ -73,10 +52,10 @@ class IgorContentAssetController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int  $type_id
      * @return Response
      */
-    public function update($id)
+    public function update($content_id, $id)
     {
         //
     }
@@ -87,7 +66,7 @@ class IgorContentAssetController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($content_id, $id)
     {
         //
     }
