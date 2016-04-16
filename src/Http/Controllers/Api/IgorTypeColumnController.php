@@ -6,13 +6,16 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Jeremytubbs\Igor\Models\ColumnType;
+use Jeremytubbs\Igor\Models\ContentType;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnTypeRepository;
+use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentTypeRepository;
 
 class IgorTypeColumnController extends Controller
 {
     public function __construct()
     {
         $this->columnType = new EloquentColumnTypeRepository(new ColumnType());
+        $this->contentType = new EloquentContentTypeRepository(new ContentType());
     }
 
     /**
