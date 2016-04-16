@@ -7,8 +7,8 @@ use Jeremytubbs\VanDeGraaff\Generate;
 use Jeremytubbs\VanDeGraaff\Discharge;
 use Symfony\Component\Yaml\Parser;
 
-trait IgorStaticHelpers {
-
+trait IgorStaticHelpers
+{
     public function setPaths($path)
     {
         $this->path = $path;

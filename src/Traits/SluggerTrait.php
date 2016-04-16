@@ -2,8 +2,8 @@
 
 namespace Jeremytubbs\Igor\Traits;
 
-trait SluggerTrait {
-
+trait SluggerTrait
+{
     public function setSlugAttribute($title)
     {
         $slug = str_slug($title);

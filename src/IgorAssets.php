@@ -13,8 +13,8 @@ use Jeremytubbs\Igor\Repositories\Eloquent\EloquentAssetRepository;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentAssetTypeRepository;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentAssetSourceRepository;
 
-class IgorAssets {
-
+class IgorAssets
+{
     use \Illuminate\Foundation\Bus\DispatchesJobs;
     use \Jeremytubbs\Igor\Traits\IgorAssetHelpers;
     use \Jeremytubbs\Igor\Traits\IgorStaticHelpers;
