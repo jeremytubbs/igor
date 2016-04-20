@@ -60,6 +60,7 @@ class IgorServiceProvider extends ServiceProvider
             'Jeremytubbs\Igor\Console\Commands\IgorWatchCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorBuildCommand',
             'Jeremytubbs\Igor\Console\Commands\IgorNewCommand',
+            'Jeremytubbs\Igor\Console\Commands\IgorDestroyCommand',
         ]);
 
         $this->app->bind('Jeremytubbs\Igor\Contracts\IgorRepositoryInterface',
