@@ -49,7 +49,7 @@ interface BaseRepositoryInterface
 
     /**
      * Find a resource by the given slug
-     * @param  int    $slug
+     * @param  string    $slug
      * @return object
      */
     public function findBySlug($slug);

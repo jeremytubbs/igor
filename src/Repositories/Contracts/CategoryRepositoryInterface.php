@@ -6,5 +6,10 @@ use Jeremytubbs\Igor\Repositories\Contracts\BaseRepositoryInterface as BaseRepos
 
 interface CategoryRepositoryInterface extends BaseRepository
 {
-
+    /**
+     * Find a id by the given slug
+     * @param  string    $slug
+     * @return int
+     */
+    public function findIdBySlug($slug);
 }

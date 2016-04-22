@@ -8,6 +8,11 @@ use Jeremytubbs\Igor\Repositories\Contracts\CategoryRepositoryInterface as Categ
 
 class EloquentCategoryRepository extends EloquentBaseRepository implements CategoryRepository
 {
+	/**
+     * Find a id by the given slug
+     * @param  string    $slug
+     * @return int
+     */
     public function findIdBySlug($slug)
     {
         $type = $this->findBySlug($slug);
