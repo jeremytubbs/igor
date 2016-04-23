@@ -6,5 +6,10 @@ use Jeremytubbs\Igor\Repositories\Contracts\BaseRepositoryInterface as BaseRepos
 
 interface AssetRepositoryInterface extends BaseRepository
 {
+    /**
+     * Find a resource with type
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getWithType();
 
 }
