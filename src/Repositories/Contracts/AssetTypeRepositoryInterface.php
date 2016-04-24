@@ -6,5 +6,11 @@ use Jeremytubbs\Igor\Repositories\Contracts\BaseRepositoryInterface as BaseRepos
 
 interface AssetTypeRepositoryInterface extends BaseRepository
 {
-
+    /**
+     * Find a resource by the given name
+     *
+     * @param  string $name
+     * @return object
+     */
+    public function findByName($name);
 }
