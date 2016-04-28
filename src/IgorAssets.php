@@ -113,7 +113,7 @@ class IgorAssets
             $asset_model = $this->asset->firstOrCreate([
                 'asset_type_id' => $asset_type->id,
                 'asset_source_id' => $asset_source->id,
-                'uri' => $uri
+                'uri' => str_replace(public_path(), '', $uri),
                 ]);
             $asset_ids[] = $asset_model->id;
         }
