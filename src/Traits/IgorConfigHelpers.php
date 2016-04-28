@@ -7,6 +7,7 @@ trait IgorConfigHelpers
     protected function updateTypes()
     {
         array_push($this->config['types'], $this->type);
+        $this->config['types'] = array_flatten($this->config['types']);
     }
 
     protected function removeType($type)
@@ -47,7 +48,7 @@ trait IgorConfigHelpers
     protected function setCustomColumns()
     {
         $this->columns = null;
-        if ($this->option('columns')) {
+        if ($this->option('columns') !== 'null') {
             $columns = strpos($this->option('columns'), '||') ? explode('||', $this->option('columns')) : (array) $this->option('columns');
             $this->columns[$this->type] = [];
             foreach ($columns as $column) {

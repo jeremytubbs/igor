@@ -57,9 +57,11 @@ class IgorBuildCommand extends Command
             $this->updateTypes();
             $this->makePostConfig();
         }
-        if ($this->route) {
+        var_dump($this->route);
+        if ($this->route !== 'null') {
             $this->updateContentTypeRoutes();
         }
+        var_dump($this->columns);
         if ($this->columns) {
             $this->updateCustomColumns();
         }
