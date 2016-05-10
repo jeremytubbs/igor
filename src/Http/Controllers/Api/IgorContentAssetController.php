@@ -16,6 +16,7 @@ class IgorContentAssetController extends Controller
     public function __construct()
     {
         $this->asset = new EloquentAssetRepository(new Asset());
+        $this->content = new EloquentContentRepository(new Content());
     }
 
     /**
@@ -23,9 +24,9 @@ class IgorContentAssetController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index($content_id)
     {
-        return $this->asset->getWithType();
+        return Content::with('assets')->find($content_id);
     }
 
     /**
