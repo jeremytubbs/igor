@@ -3,11 +3,11 @@
 namespace Jeremytubbs\Igor\Console\Commands;
 
 use Exception;
-use App\Content;
 use Jeremytubbs\Igor\Igor;
 use Jeremytubbs\Igor\IgorAssets;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Jeremytubbs\Igor\Models\Content;
 use Jeremytubbs\Igor\Models\AssetType;
 use Jeremytubbs\Igor\Models\ContentType;
 use Jeremytubbs\Igor\Models\ColumnType;
