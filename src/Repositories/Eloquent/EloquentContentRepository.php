@@ -24,18 +24,6 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
     }
 
     /**
-     * Update a resource
-     * @param $content
-     * @param  array $data
-     * @return object
-     */
-    public function attachAssets($content, $data)
-    {
-        $content->assets()->attach(array_get($data, 'assets', []));
-        return $content;
-    }
-
-    /**
      * Find a resource with included relations
      * @param  array $relations
      * @return \Illuminate\Database\Eloquent\Collection
@@ -48,7 +36,7 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
     public function getByCategory($category, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
     {
         $query = $this->model->where('published', '=', true)
-            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->with('type', 'columns', 'columns.type', 'tags', 'categories')
             ->whereHas('categories', function ($q) use ($category) {
                 $q->where('slug', '=', $category);
             })
@@ -62,7 +50,7 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
     public function getByTag($tag, $take = 15, $orderBy = 'created_at', $sortOrder = 'DESC')
     {
         $query = $this->model->where('published', '=', true)
-            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->with('type', 'columns', 'columns.type', 'tags', 'categories')
             ->whereHas('tags', function ($q) use ($tag) {
                 $q->where('slug', '=', $tag);
             })
@@ -77,7 +65,7 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
     {
         $query = $this->model->where('published', '=', true)
             ->where('content_type_id', '=', $type)
-            ->with('columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->with('columns', 'columns.type', 'tags', 'categories')
             ->orderBy($orderBy, $sortOrder);
         if ($take) return $query->paginate($take);
         return $query->get();
@@ -86,7 +74,7 @@ class EloquentContentRepository extends EloquentBaseRepository implements Conten
     public function findBySlugAndType($slug, $type = null)
     {
         return  $this->model->where('published', '=', true)
-            ->with('type', 'columns', 'columns.type', 'tags', 'categories', 'assets', 'assets.type', 'assets.source')
+            ->with('type', 'columns', 'columns.type', 'tags', 'categories')
             ->where('slug', '=', $slug)
             ->where('content_type_id', '=', $type)
             ->first();

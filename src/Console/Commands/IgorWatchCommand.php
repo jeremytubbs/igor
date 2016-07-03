@@ -4,22 +4,17 @@ namespace Jeremytubbs\Igor\Console\Commands;
 
 use Exception;
 use Jeremytubbs\Igor\Igor;
-use Jeremytubbs\Igor\IgorAssets;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Jeremytubbs\Igor\Models\Content;
-use Jeremytubbs\Igor\Models\AssetType;
 use Jeremytubbs\Igor\Models\ContentType;
 use Jeremytubbs\Igor\Models\ColumnType;
-use Jeremytubbs\Igor\Repositories\Eloquent\EloquentAssetTypeRepository;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentRepository;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentContentTypeRepository;
 use Jeremytubbs\Igor\Repositories\Eloquent\EloquentColumnTypeRepository;
 
 class IgorWatchCommand extends Command
 {
-    use \Jeremytubbs\Igor\Traits\IgorAssetHelpers;
-
     /**
      * The name and signature of the console command.
      *
@@ -41,7 +36,6 @@ class IgorWatchCommand extends Command
      */
     public function __construct(Filesystem $files)
     {
-        $this->assetType = new EloquentAssetTypeRepository(new AssetType());
         $this->content = new EloquentContentRepository(new Content());
         $this->contentType = new EloquentContentTypeRepository(new ContentType());
         $this->columnType = new EloquentColumnTypeRepository(new ColumnType());
@@ -60,7 +54,6 @@ class IgorWatchCommand extends Command
         if (! file_exists($staticPath)) {
             throw new Exception("No 'resources/static' folder.");
         }
-        $this->createAssetTypes();
         $this->createContentTypes();
         $this->createColumnTypes();
         $this->info("It's Alive!");
@@ -72,17 +65,7 @@ class IgorWatchCommand extends Command
             foreach ($contents as $post) {
                 $igor = new Igor($post);
                 $igor->reAnimate();
-                $igor = new IgorAssets($post);
-                $igor->reAnimateAssets();
             }
-        }
-    }
-
-    public function createAssetTypes()
-    {
-        $imageSizes = $this->getAllAssetTypes();
-        foreach($imageSizes as $type  => $description) {
-            $this->assetType->firstOrCreate(['name' => $type]);
         }
     }
 

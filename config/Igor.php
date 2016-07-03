@@ -24,10 +24,5 @@ return [
     // use the sitemap route
     'use_sitemap' => true,
 
-    'assets' => [
-        'deepzoom' => false,
-        'resize'   => false
-    ],
-
     'excerpt_separator' => '<!--more-->',
 ];

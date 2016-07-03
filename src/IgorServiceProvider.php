@@ -2,7 +2,6 @@
 
 namespace Jeremytubbs\Igor;
 
-use Jeremytubbs\Igor\IgorAssets;
 use Illuminate\Support\ServiceProvider;
 
 class IgorServiceProvider extends ServiceProvider
@@ -14,8 +13,6 @@ class IgorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->setEventListeners();
-
         // Load routes
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/Http/routes.php';
@@ -36,7 +33,6 @@ class IgorServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->publishes([
-            __DIR__.'/../stubs/Models/Asset.php' => app_path('Asset.php'),
             __DIR__.'/../stubs/Models/Tag.php' => app_path('Tag.php'),
             __DIR__.'/../stubs/Models/Category.php' => app_path('Category.php'),
             __DIR__.'/../stubs/Models/Content.php' => app_path('Content.php'),
@@ -66,20 +62,6 @@ class IgorServiceProvider extends ServiceProvider
         $this->app->bind('Jeremytubbs\Igor\Contracts\IgorRepositoryInterface',
             'Jeremytubbs\Igor\Repositories\IgorEloquentRepository');
 
-        $this->app->register('Jeremytubbs\LaravelResizer\ResizerServiceProvider');
-        $this->app->register('Jeremytubbs\LaravelDeepzoom\DeepzoomServiceProvider');
         $this->app->register('Roumen\Sitemap\SitemapServiceProvider');
-    }
-
-    public function setEventListeners()
-    {
-        \Event::listen('resizer', function($data) {
-            $path = substr(dirname($data['source']), 0, -7);
-            (new IgorAssets($path))->handleImageResponseEvent($data);
-        });
-        \Event::listen('deepzoom', function($data) {
-            $path = substr(dirname($data['source']), 0, -7);
-            (new IgorAssets($path))->handleImageResponseEvent($data);
-        });
     }
 }

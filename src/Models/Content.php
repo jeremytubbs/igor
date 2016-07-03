@@ -43,14 +43,6 @@ class Content extends Model
     }
 
     /**
-     * Get all of the posts assets.
-     */
-    public function assets()
-    {
-        return $this->morphToMany('Jeremytubbs\Igor\Models\Asset', 'assetable')->withTimestamps();
-    }
-
-    /**
      * Get the user.
      */
     public function user()

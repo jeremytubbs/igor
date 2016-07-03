@@ -41,9 +41,6 @@ Route::group(['middleware' => ['auth:api', 'throttle']], function() {
         Route::resource('types', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentTypeController', ['except' => [
             'create', 'edit'
         ]]);
-        Route::resource('contents.assets', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentAssetController', ['except' => [
-            'create', 'edit'
-        ]]);
         Route::resource('types.columns', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorTypeColumnController', ['except' => [
             'create', 'edit'
         ]]);

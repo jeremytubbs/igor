@@ -39,17 +39,7 @@ class IgorSitemapController extends Controller
             $pages = $this->content->getByType(null, null);
             foreach ($pages as $page) {
                 if($page->published == 1) {
-                    $images = [];
-                    foreach ($page->assets as $asset) {
-                        if ($asset->type->name == 'preview') {
-                            $images[] = [
-                                'url' => $asset->uri,
-                                'title' => $asset->source->title,
-                                'caption' => $asset->source->caption
-                            ];
-                        }
-                    }
-                    $sitemap->add(URL::to($page->slug), $page->updated_at, '0.5', 'monthly', $images);
+                    $sitemap->add(URL::to($page->slug), $page->updated_at, '0.5', 'monthly');
                 }
             }
 
@@ -63,17 +53,7 @@ class IgorSitemapController extends Controller
                 // add every post to the sitemap
                 foreach ($posts as $post) {
                     if($post->published == 1) {
-                        $images = [];
-                        foreach ($post->assets as $asset) {
-                            if ($asset->type->name == 'preview') {
-                                $images[] = [
-                                    'url' => $asset->uri,
-                                    'title' => $asset->source->title,
-                                    'caption' => $asset->source->caption
-                                ];
-                            }
-                        }
-                        $sitemap->add(URL::to($content_type->slug.'/'.$post->slug), $post->updated_at, '0.8', 'weekly', $images);
+                        $sitemap->add(URL::to($content_type->slug.'/'.$post->slug), $post->updated_at, '0.8', 'weekly');
                     }
                 }
             }
