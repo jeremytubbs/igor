@@ -61,11 +61,16 @@ class IgorWatchCommand extends Command
         $types = $this->files->directories($staticPath);
         foreach ($types as $type_path) {
             $type = basename($type_path);
-            $contents = $this->files->directories("$staticPath/$type");
-            foreach ($contents as $post) {
-                $igor = new Igor($post);
-                $igor->reAnimate();
+            if (substr($type, 0, 1) == '_') {
+                $contents = $this->files->directories("$staticPath/$type");
+                foreach ($contents as $post) {
+                    $igor = new Igor($post);
+                    $igor->reAnimate();
+                }
+            } else {
+                $this->files->copyDirectory($type_path, public_path($type));
             }
+
         }
     }
 
@@ -78,11 +83,9 @@ class IgorWatchCommand extends Command
                 'name' => $type
             ]);
             if (null !== config("igor.content_type_routes.$type")) {
-                $slug = config("igor.content_type_routes.$type");
-                $this->contentType->update($content_type, ['slug' => $slug]);
-            } else {
-                $this->contentType->update($content_type, ['slug' => str_slug($type)]);
+                $type = config("igor.content_type_routes.$type");
             }
+            $this->contentType->update($content_type, ['slug' => str_slug($type)]);
         }
     }
 

@@ -49,7 +49,7 @@ class IgorNewCommand extends Command
 
     protected function makePost()
     {
-        $path = base_path('resources/static/'.$this->type.'/'.$this->slug);
+        $path = base_path('resources/static/_'.$this->type.'/'.$this->slug);
 
         if ($this->files->exists($path)) {
             return $this->error($this->name . ' already exists!');
@@ -64,7 +64,7 @@ class IgorNewCommand extends Command
 
     protected function compilePostStub()
     {
-        $stub = $this->files->get(__DIR__ . '/../../stubs/post/index.stub');
+        $stub = $this->files->get(__DIR__ . '/../../../stubs/post/index.stub');
         $stub = str_replace('{{title}}', $this->title, $stub);
         return $stub;
     }

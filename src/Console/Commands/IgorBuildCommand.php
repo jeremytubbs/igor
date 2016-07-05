@@ -51,17 +51,17 @@ class IgorBuildCommand extends Command
         $this->setContentType();
         $this->setCustomRoute();
         $this->setCustomColumns();
-        $path = base_path('resources/static/'. $this->type);
-        if (! $this->files->exists($path)) {
-            $this->files->makeDirectory($path);
+        $this->path = base_path('resources/static/_'. $this->type);
+        if (! $this->files->exists($this->path)) {
+            $this->files->makeDirectory($this->path);
             $this->updateTypes();
             $this->makePostConfig();
         }
-        var_dump($this->route);
+
         if ($this->route !== 'null') {
             $this->updateContentTypeRoutes();
         }
-        var_dump($this->columns);
+
         if ($this->columns) {
             $this->updateCustomColumns();
         }
@@ -70,7 +70,7 @@ class IgorBuildCommand extends Command
 
     protected function makePostConfig()
     {
-        $post_config_path = base_path("resources/static/$this->type/config.yaml");
+        $post_config_path = "$this->path/config.yaml";
         $this->files->put($post_config_path, '# Override main config.yaml here.');
     }
 
