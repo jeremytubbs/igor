@@ -18,6 +18,7 @@ return [
     'content_type_routes' => [
         // 'content-type' => 'route-name',
     ],
+    'use_api_routes' => true,
     'use_page_routes' => true,
     'use_tag_routes' => true,
     'use_category_routes' => true,
