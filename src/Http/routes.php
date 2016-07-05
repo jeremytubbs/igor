@@ -27,22 +27,24 @@ Route::group(['middleware' => ['web']], function () {
     }
 });
 
-Route::group(['middleware' => ['auth:api', 'throttle']], function() {
-    $domain = '';
-    $prefix = 'api/v1';
-    if (config('app.env') == 'production') {
-        $domain = env('SITE_API_URL', '');
-        $prefix = 'v1';
-    }
-    Route::group(['domain' => $domain, 'prefix' => $prefix], function () {
-        Route::resource('contents', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentController', ['except' => [
-            'create', 'edit'
-        ]]);
-        Route::resource('types', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentTypeController', ['except' => [
-            'create', 'edit'
-        ]]);
-        Route::resource('types.columns', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorTypeColumnController', ['except' => [
-            'create', 'edit'
-        ]]);
+if (config('igor.use_api_routes') == true) {
+    Route::group(['middleware' => ['auth:api', 'throttle']], function() {
+        $domain = '';
+        $prefix = 'api/v1';
+        if (config('app.env') == 'production') {
+            $domain = env('SITE_API_URL', '');
+            $prefix = 'v1';
+        }
+        Route::group(['domain' => $domain, 'prefix' => $prefix], function () {
+            Route::resource('contents', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentController', ['except' => [
+                'create', 'edit'
+            ]]);
+            Route::resource('types', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorContentTypeController', ['except' => [
+                'create', 'edit'
+            ]]);
+            Route::resource('types.columns', 'Jeremytubbs\Igor\Http\Controllers\Api\IgorTypeColumnController', ['except' => [
+                'create', 'edit'
+            ]]);
+        });
     });
-});
+}
