@@ -19,6 +19,7 @@ class CreateContentsTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->mediumText('body')->nullable();
+            $table->text('image')->nullable();
             $table->string('layout')->nullable();
             $table->boolean('featured')->default(0);
             $table->boolean('published')->default(0);
